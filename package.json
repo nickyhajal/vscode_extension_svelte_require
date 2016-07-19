@@ -1,0 +1,29 @@
+{
+    "name": "vs-code-quick-require",
+    "displayName": "vs_code_quick_require",
+    "description": "",
+    "version": "0.0.1",
+    "publisher": "milkmidi",
+    "engines": {
+        "vscode": "^1.0.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:extension.quickRequire"
+    ],
+    "main": "./extension",
+    "contributes": {
+        "commands": [{
+            "command": "extension.quickRequire",
+            "title": "Quick Require"
+        }]
+    },
+    "scripts": {
+        "postinstall": "node ./node_modules/vscode/bin/install"
+    },
+    "devDependencies": {
+        "vscode": "^0.11.0"
+    }
+}
