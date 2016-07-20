@@ -2,25 +2,35 @@
     "name": "vs-code-quick-require",
     "displayName": "Quick Require",
     "description": "quick require file",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "publisher": "milkmidi",
     "engines": {
         "vscode": "^1.0.0"
     },
+    "icon":"img/icon.png",
     "homepage": "https://github.com/milkmidi/vscode_extension_quick_require/blob/master/README.md",    
-    "license": "MIT", 
+    "license": "MIT",
+    "galleryBanner": {
+        "color": "#bdc3c7"
+    }, 
     "categories": [
         "Other"
     ],
     "activationEvents": [
         "onCommand:extension.quickRequire"
     ],
-    "main": "./extension",
+    "main": "./src/extension",
     "contributes": {
         "commands": [{
             "command": "extension.quickRequire",
             "title": "Quick Require"
-        }]
+        }],
+         "keybindings": [
+			{
+				"command": "extension.quickRequire",
+				"key":"ctrl+shift+1"
+			}
+		]
     },
     "scripts": {
         "postinstall": "node ./node_modules/vscode/bin/install"
