@@ -2,7 +2,7 @@
     "name": "vs-code-quick-require",
     "displayName": "Quick Require",
     "description": "quick require file",
-    "version": "0.0.12",
+    "version": "0.0.2",
     "publisher": "milkmidi",
     "engines": {
         "vscode": "^1.0.0"
@@ -17,18 +17,45 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.quickRequire"
+        "onCommand:extension.quickRequire",
+        "onCommand:extension.quickRequire_import"
     ],
     "main": "./src/extension",
     "contributes": {
-        "commands": [{
-            "command": "extension.quickRequire",
-            "title": "Quick Require"
-        }],
+        "configuration": {
+            "type": "object",
+            "title": "quick require configuration",
+            "properties": {
+                "quickrequire.include": {
+                    "type": "array",
+                    "default": ["js","ts","jsx","tsx"],                    
+                    "description": "include files to search for"
+                } ,
+                "quickrequire.exclude": {
+                    "type": "array",
+                    "default": ["node_modules","typings","dist","bin","build","tmp"],
+                    "description": "defines files and folders to exclude"
+                }                  
+            }
+        },
+        "commands": [
+            {
+                "command": "extension.quickRequire",
+                "title": "Quick Require"
+            },
+            {
+                "command": "extension.quickRequire_import",
+                "title": "Quick import"
+            }
+        ],
          "keybindings": [
 			{
 				"command": "extension.quickRequire",
 				"key":"ctrl+shift+1"
+			},
+            {
+				"command": "extension.quickRequire_import",
+				"key":"ctrl+shift+2"
 			}
 		]
     },

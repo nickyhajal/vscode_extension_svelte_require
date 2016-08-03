@@ -9,6 +9,7 @@ quick require js
 # Usage
 ## Available commands
 * **Quick Require** 
-* default shortcut `Ctrl+Shift+1`
+* default shortcut `Ctrl+Shift+1` --> require
+* default shortcut `Ctrl+Shift+2` --> import
 
 **Enjoy!**
