@@ -7,8 +7,14 @@ function activate( context ) {
     const config = vscode.workspace.getConfiguration( 'quickrequire' ) || {};
     const include = config.include;
     const exclude = config.exclude;        
-    const includePattern = include.reduce( (pre,cur,index ,arr) => { return pre + '**/*.'+cur + (index == arr.length-1 ? '}' : ','); } ,"{");
-    const excludePattern = exclude.reduce( (pre,cur,index ,arr) => { return pre + '**/'+cur + (index == arr.length-1 ? '}' : ','); } ,"{");
+    // const includePattern = include.reduce( (pre,cur,index ,arr) => { return pre + '**/*.'+cur + (index == arr.length-1 ? '}' : ','); } ,"{");
+    const includePattern = '/**/*.{' + include.toString() +"}"; 
+    console.log( includePattern );
+    // const excludePattern = exclude.reduce( (pre,cur,index ,arr) => { return pre + '**/'+cur + (index == arr.length-1 ? '}' : ','); } ,"{");
+    const excludePattern = '**/{' + exclude.toString() + '}';
+    console.log( excludePattern );
+
+
     
     var startPick = function( type ){
         vscode.workspace.findFiles( includePattern, excludePattern , 100 ).then( result => {
