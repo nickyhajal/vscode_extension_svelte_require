@@ -1,5 +1,5 @@
-const vscode = require( 'vscode' );
-const path = require( 'path' );
+const vscode = require('vscode'); // eslint-disable-line
+const path = require('path');
 const commonNames = require('./common-names');
 const getCoreModules = require('./get-core-modules');
 const getPackageDeps = require('./get-package-deps');
@@ -7,34 +7,30 @@ const getPackageDeps = require('./get-package-deps');
 const TYPE_REQUIRE = 0;
 const TYPE_IMPORT = 1;
 
-function activate( context ) {
-    const config = vscode.workspace.getConfiguration( 'quickrequire' ) || {};
-    const include = config.include;
-    const exclude = config.exclude;        
-    const includePattern = '/**/*.{' + include.toString() +"}"; 
-    console.log( includePattern );
-    const excludePattern = '**/{' + exclude.toString() + '}';
-    console.log( excludePattern );
+function activate(context) {
+    const config = vscode.workspace.getConfiguration('quickrequire') || {};
+    const includePattern = `/**/*.{${config.include.toString()}}`;
+    const excludePattern = `**/{${config.exclude.toString()}}`;
 
-    var startPick = function( type ){
-        vscode.workspace.findFiles( includePattern, excludePattern , 100 ).then( result => {
-            var edit = vscode.window.activeTextEditor;
+    const startPick = function(type) {
+        vscode.workspace.findFiles(includePattern, excludePattern, 100).then((result) => {
+            const edit = vscode.window.activeTextEditor;
 
-            if ( !edit ) {
+            if (!edit) {
                 return;
             }
 
-            var items = [];
+            const items = [];
 
-            getPackageDeps().forEach(dep => {
+            getPackageDeps().forEach((dep) => {
                 items.push({
                     label: dep,
                     description: 'package dependency',
-                    fsPath: null
-                })
+                    fsPath: null,
+                });
             });
 
-            getCoreModules().forEach(dep => {
+            getCoreModules().forEach((dep) => {
                 items.push({
                     label: dep,
                     description: 'core module',
@@ -42,69 +38,66 @@ function activate( context ) {
                 });
             });
 
-            result.forEach(dep => {
-                if ( dep.fsPath.indexOf( 'gulpfile.js' ) != -1 || dep.fsPath.indexOf( 'dist' ) != -1 ) {
-                    continue;
-                }
-
-                items.push( {
+            result.forEach((dep) => {
+                items.push({
                     label: path.basename(dep.path),
-                    description: dep.fsPath.replace( vscode.workspace.rootPath, '' ).replace( /\\/g, "/" ),
-                    fsPath: dep.fsPath
+                    description: dep.fsPath.replace(vscode.workspace.rootPath, '').replace(/\\/g, '/'),
+                    fsPath: dep.fsPath,
                 });
             });
 
-            vscode.window.showQuickPick( items, { placeHolder: 'select file' }).then(( value ) => {
-                if ( !value ) {
+            vscode.window.showQuickPick(items, { placeHolder: 'select file' }).then((value) => {
+                if (!value) {
                     return;
                 }
 
-                var relativePath;
-                var fileName;
+                let relativePath;
+                let fileName;
 
                 if (value.fsPath) {
-                    var dirName = path.dirname( edit.document.fileName );
-                    relativePath = path.relative( dirName, value.fsPath );
-                    relativePath = relativePath.replace( /\\/g, "/" );
-                    fileName = path.basename( value.fsPath ).split('.')[0];                
-                    if ( relativePath.indexOf( "../" ) == - 1 ) {
-                        relativePath = "./" + relativePath;
+                    const dirName = path.dirname(edit.document.fileName);
+                    relativePath = path.relative(dirName, value.fsPath);
+                    relativePath = relativePath.replace(/\\/g, '/');
+                    fileName = path.basename(value.fsPath).split('.')[0];
+
+                    if (relativePath.indexOf('../') === -1) {
+                        relativePath = `./${relativePath}`;
                     }
-                    relativePath = relativePath.replace('.js','');
+
+                    relativePath = relativePath.replace('.js', '');
                 } else {
                     relativePath = value.label;
                     fileName = commonNames(value.label);
                 }
 
-                var script;
-                if( type === TYPE_REQUIRE){
-                    script = "const " + fileName + " = require(\'" + relativePath + "\');\n";
-                }else{
-                    script = "import " + fileName + " from \'" + relativePath + "\';\n";
+                let script;
+
+                if (type === TYPE_REQUIRE) {
+                    script = `const ${fileName} = require('${relativePath}');\n`;
+                } else {
+                    script = `import ${fileName} from '${relativePath}';\n`;
                 }
-                
-                edit.edit(( editBuilder ) => {
-                    var position = new vscode.Position( 0, 0 );
-                    editBuilder.insert( position, script );
-                });         
+
+                edit.edit((editBuilder) => {
+                    const position = new vscode.Position(0, 0);
+                    editBuilder.insert(position, script);
+                });
             });
         });
     };
 
-    var disposable = vscode.commands.registerCommand( 'extension.quickRequire', ()=> {        
-        startPick( TYPE_REQUIRE );
-    });
+    context.subscriptions.push(vscode.commands.registerCommand('extension.quickRequire', () => {
+        startPick(TYPE_REQUIRE);
+    }));
 
-    context.subscriptions.push( disposable );
-
-    disposable = vscode.commands.registerCommand( 'extension.quickRequire_import', ()=> {
-        startPick( TYPE_IMPORT);
-    });
-
-    context.subscriptions.push( disposable );
+    context.subscriptions.push(vscode.commands.registerCommand('extension.quickRequire_import', () => {
+        startPick(TYPE_IMPORT);
+    }));
 }
+
 exports.activate = activate;
 
 function deactivate() {
 }
+
 exports.deactivate = deactivate;
