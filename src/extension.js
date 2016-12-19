@@ -1,8 +1,11 @@
 const vscode = require('vscode'); // eslint-disable-line
 const path = require('path');
+const os = require('os');
+const _ = require('lodash');
 const commonNames = require('./common-names');
 const getCoreModules = require('./get-core-modules');
 const getPackageDeps = require('./get-package-deps');
+const getPosition = require('./get-position');
 
 const TYPE_REQUIRE = 0;
 const TYPE_IMPORT = 1;
@@ -14,9 +17,9 @@ function activate(context) {
 
     const startPick = function(type) {
         vscode.workspace.findFiles(includePattern, excludePattern, 100).then((result) => {
-            const edit = vscode.window.activeTextEditor;
+            const editor = vscode.window.activeTextEditor;
 
-            if (!edit) {
+            if (!editor) {
                 return;
             }
 
@@ -52,13 +55,13 @@ function activate(context) {
                 }
 
                 let relativePath;
-                let fileName;
+                let importName;
 
                 if (value.fsPath) {
-                    const dirName = path.dirname(edit.document.fileName);
+                    const dirName = path.dirname(editor.document.fileName);
                     relativePath = path.relative(dirName, value.fsPath);
                     relativePath = relativePath.replace(/\\/g, '/');
-                    fileName = path.basename(value.fsPath).split('.')[0];
+                    importName = _.camelCase(path.basename(value.fsPath).split('.')[0]);
 
                     if (relativePath.indexOf('../') === -1) {
                         relativePath = `./${relativePath}`;
@@ -67,20 +70,27 @@ function activate(context) {
                     relativePath = relativePath.replace('.js', '');
                 } else {
                     relativePath = value.label;
-                    fileName = commonNames(value.label);
+                    const commonName = commonNames(value.label);
+                    importName = commonName || _.camelCase(value.label);
                 }
 
                 let script;
 
                 if (type === TYPE_REQUIRE) {
-                    script = `const ${fileName} = require('${relativePath}');\n`;
+                    script = `const ${importName} = require('${relativePath}');`;
                 } else {
-                    script = `import ${fileName} from '${relativePath}';\n`;
+                    script = `import ${importName} from '${relativePath}';`;
                 }
 
-                edit.edit((editBuilder) => {
-                    const position = new vscode.Position(0, 0);
-                    editBuilder.insert(position, script);
+                const codeBlock = editor.document.getText().split(os.EOL);
+                const lineStart = getPosition(editor.document.getText().split(os.EOL));
+                const alreadyImported = codeBlock.some(line => line === script);
+
+                if (alreadyImported) return;
+
+                editor.edit((editBuilder) => {
+                    const position = new vscode.Position(lineStart, 0);
+                    editBuilder.insert(position, `${script}\n`);
                 });
             });
         });

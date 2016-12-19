@@ -7,12 +7,12 @@
     "engines": {
         "vscode": "^1.0.0"
     },
-    "icon":"img/icon.png",
-    "homepage": "https://github.com/milkmidi/vscode_extension_quick_require/blob/master/README.md",    
+    "icon": "img/icon.png",
+    "homepage": "https://github.com/milkmidi/vscode_extension_quick_require/blob/master/README.md",
     "license": "MIT",
     "galleryBanner": {
         "color": "#bdc3c7"
-    }, 
+    },
     "categories": [
         "Other"
     ],
@@ -28,14 +28,26 @@
             "properties": {
                 "quickrequire.include": {
                     "type": "array",
-                    "default": ["js","ts","jsx","tsx"],                    
+                    "default": [
+                        "js",
+                        "ts",
+                        "jsx",
+                        "tsx"
+                    ],
                     "description": "include files to search for"
-                } ,
+                },
                 "quickrequire.exclude": {
                     "type": "array",
-                    "default": ["node_modules","typings","dist","bin","build","tmp"],
+                    "default": [
+                        "node_modules",
+                        "typings",
+                        "dist",
+                        "bin",
+                        "build",
+                        "tmp"
+                    ],
                     "description": "defines files and folders to exclude"
-                }                  
+                }
             }
         },
         "commands": [
@@ -49,25 +61,28 @@
             }
         ],
         "keybindings": [
-			{
-				"command": "extension.quickRequire",
-				"key":"ctrl+shift+1"
-			},
             {
-				"command": "extension.quickRequire_import",
-				"key":"ctrl+shift+2"
-			}
-		]
+                "command": "extension.quickRequire",
+                "key": "ctrl+shift+1"
+            },
+            {
+                "command": "extension.quickRequire_import",
+                "key": "ctrl+shift+2"
+            }
+        ]
     },
     "scripts": {
         "postinstall": "node ./node_modules/vscode/bin/install"
     },
     "devDependencies": {
-        "vscode": "^0.11.0",
         "eslint": "^3.9.1",
         "eslint-config-airbnb": "^12.0.0",
         "eslint-plugin-import": "^1.16.0",
         "eslint-plugin-jsx-a11y": "^2.2.3",
-        "eslint-plugin-react": "^6.5.0"
+        "eslint-plugin-react": "^6.5.0",
+        "vscode": "^0.11.0"
+    },
+    "dependencies": {
+        "lodash": "^4.17.2"
     }
 }

@@ -68,5 +68,5 @@ module.exports = function(target) {
         'underscore.string': 's',
     };
 
-    return (target in substitutions) ? substitutions[target] : target;
+    return (target in substitutions) ? substitutions[target] : null;
 };
