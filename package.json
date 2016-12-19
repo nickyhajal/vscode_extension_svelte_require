@@ -41,14 +41,14 @@
         "commands": [
             {
                 "command": "extension.quickRequire",
-                "title": "Quick Require"
+                "title": "Quick require"
             },
             {
                 "command": "extension.quickRequire_import",
                 "title": "Quick import"
             }
         ],
-         "keybindings": [
+        "keybindings": [
 			{
 				"command": "extension.quickRequire",
 				"key":"ctrl+shift+1"
