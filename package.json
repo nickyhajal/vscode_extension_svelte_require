@@ -1,7 +1,7 @@
 {
-    "name": "vs-code-better-quick-require",
-    "displayName": "Better Quick Require",
-    "description": "Quick require files, dependencies and core modules",
+    "name": "vs-code-bitkompagniet-require",
+    "displayName": "Bitkompagniet Node Require",
+    "description": "Require files, dependencies and core modules",
     "version": "0.0.22",
     "publisher": "Bitkompagniet ApS",
     "engines": {
