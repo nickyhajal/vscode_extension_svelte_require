@@ -3,7 +3,7 @@
   "displayName": "Bitkompagniet Node Require",
   "description": "Require files, dependencies and core modules",
   "version": "0.1.0",
-  "publisher": "Bitkompagniet ApS",
+  "publisher": "bitkompagniet",
   "engines": {
     "vscode": "^1.0.0"
   },
