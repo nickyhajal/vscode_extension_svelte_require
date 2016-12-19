@@ -43,8 +43,8 @@ function activate(context) {
 
             result.forEach((dep) => {
                 items.push({
-                    label: path.basename(dep.path),
-                    description: dep.fsPath.replace(vscode.workspace.rootPath, '').replace(/\\/g, '/'),
+                    label: dep.path.slice(vscode.workspace.rootPath.length).split(/[\\/]/).join(' / '),
+                    description: 'local file',
                     fsPath: dep.fsPath,
                 });
             });
@@ -61,7 +61,12 @@ function activate(context) {
                     const dirName = path.dirname(editor.document.fileName);
                     relativePath = path.relative(dirName, value.fsPath);
                     relativePath = relativePath.replace(/\\/g, '/');
-                    importName = _.camelCase(path.basename(value.fsPath).split('.')[0]);
+
+                    if (path.basename(relativePath).toLowerCase() === 'index.js') {
+                        relativePath = relativePath.slice(0, '/index.js'.length);
+                    }
+
+                    importName = _.camelCase(path.basename(relativePath).split('.')[0]);
 
                     if (relativePath.indexOf('../') === -1) {
                         relativePath = `./${relativePath}`;
