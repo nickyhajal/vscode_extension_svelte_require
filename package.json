@@ -1,88 +1,88 @@
 {
-    "name": "vs-code-bitkompagniet-require",
-    "displayName": "Bitkompagniet Node Require",
-    "description": "Require files, dependencies and core modules",
-    "version": "0.0.22",
-    "publisher": "Bitkompagniet ApS",
-    "engines": {
-        "vscode": "^1.0.0"
-    },
-    "icon": "img/icon.png",
-    "homepage": "https://github.com/bitkompagniet/vscode_extension_quick_require",
-    "license": "MIT",
-    "galleryBanner": {
-        "color": "#bdc3c7"
-    },
-    "categories": [
-        "Other"
-    ],
-    "activationEvents": [
-        "onCommand:extension.quickRequire",
-        "onCommand:extension.quickRequire_import"
-    ],
-    "main": "./src/extension",
-    "contributes": {
-        "configuration": {
-            "type": "object",
-            "title": "quick require configuration",
-            "properties": {
-                "quickrequire.include": {
-                    "type": "array",
-                    "default": [
-                        "js",
-                        "ts",
-                        "jsx",
-                        "tsx"
-                    ],
-                    "description": "include files to search for"
-                },
-                "quickrequire.exclude": {
-                    "type": "array",
-                    "default": [
-                        "node_modules",
-                        "typings",
-                        "dist",
-                        "bin",
-                        "build",
-                        "tmp"
-                    ],
-                    "description": "defines files and folders to exclude"
-                }
-            }
+  "name": "vs-code-bitkompagniet-require",
+  "displayName": "Bitkompagniet Node Require",
+  "description": "Require files, dependencies and core modules",
+  "version": "0.1.0",
+  "publisher": "Bitkompagniet ApS",
+  "engines": {
+    "vscode": "^1.0.0"
+  },
+  "icon": "img/icon.png",
+  "homepage": "https://github.com/bitkompagniet/vscode_extension_quick_require",
+  "license": "MIT",
+  "galleryBanner": {
+    "color": "#bdc3c7"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.quickRequire",
+    "onCommand:extension.quickRequire_import"
+  ],
+  "main": "./src/extension",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "quick require configuration",
+      "properties": {
+        "quickrequire.include": {
+          "type": "array",
+          "default": [
+            "js",
+            "ts",
+            "jsx",
+            "tsx"
+          ],
+          "description": "include files to search for"
         },
-        "commands": [
-            {
-                "command": "extension.quickRequire",
-                "title": "Node require"
-            },
-            {
-                "command": "extension.quickRequire_import",
-                "title": "Node import"
-            }
-        ],
-        "keybindings": [
-            {
-                "command": "extension.quickRequire",
-                "key": "ctrl+shift+1"
-            },
-            {
-                "command": "extension.quickRequire_import",
-                "key": "ctrl+shift+2"
-            }
-        ]
+        "quickrequire.exclude": {
+          "type": "array",
+          "default": [
+            "node_modules",
+            "typings",
+            "dist",
+            "bin",
+            "build",
+            "tmp"
+          ],
+          "description": "defines files and folders to exclude"
+        }
+      }
     },
-    "scripts": {
-        "postinstall": "node ./node_modules/vscode/bin/install"
-    },
-    "devDependencies": {
-        "eslint": "^3.9.1",
-        "eslint-config-airbnb": "^12.0.0",
-        "eslint-plugin-import": "^1.16.0",
-        "eslint-plugin-jsx-a11y": "^2.2.3",
-        "eslint-plugin-react": "^6.5.0",
-        "vscode": "^0.11.0"
-    },
-    "dependencies": {
-        "lodash": "^4.17.2"
-    }
+    "commands": [
+      {
+        "command": "extension.quickRequire",
+        "title": "Node require"
+      },
+      {
+        "command": "extension.quickRequire_import",
+        "title": "Node import"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "extension.quickRequire",
+        "key": "ctrl+shift+1"
+      },
+      {
+        "command": "extension.quickRequire_import",
+        "key": "ctrl+shift+2"
+      }
+    ]
+  },
+  "scripts": {
+    "postinstall": "node ./node_modules/vscode/bin/install"
+  },
+  "devDependencies": {
+    "eslint": "^3.9.1",
+    "eslint-config-airbnb": "^12.0.0",
+    "eslint-plugin-import": "^1.16.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.5.0",
+    "vscode": "^0.11.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.2"
+  }
 }
