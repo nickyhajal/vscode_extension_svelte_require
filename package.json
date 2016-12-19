@@ -1,14 +1,14 @@
 {
-    "name": "vs-code-quick-require",
-    "displayName": "Quick Require",
-    "description": "quick require file",
+    "name": "vs-code-better-quick-require",
+    "displayName": "Better Quick Require",
+    "description": "Quick require files, dependencies and core modules",
     "version": "0.0.22",
-    "publisher": "milkmidi",
+    "publisher": "Bitkompagniet ApS",
     "engines": {
         "vscode": "^1.0.0"
     },
     "icon": "img/icon.png",
-    "homepage": "https://github.com/milkmidi/vscode_extension_quick_require/blob/master/README.md",
+    "homepage": "https://github.com/bitkompagniet/vscode_extension_quick_require",
     "license": "MIT",
     "galleryBanner": {
         "color": "#bdc3c7"
@@ -53,11 +53,11 @@
         "commands": [
             {
                 "command": "extension.quickRequire",
-                "title": "Quick require"
+                "title": "Node require"
             },
             {
                 "command": "extension.quickRequire_import",
-                "title": "Quick import"
+                "title": "Node import"
             }
         ],
         "keybindings": [
