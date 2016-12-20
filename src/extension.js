@@ -6,6 +6,7 @@ const commonNames = require('./common-names');
 const getCoreModules = require('./get-core-modules');
 const getPackageDeps = require('./get-package-deps');
 const getPosition = require('./get-position');
+const caseName = require('./case-name');
 
 const TYPE_REQUIRE = 0;
 const TYPE_IMPORT = 1;
@@ -63,10 +64,10 @@ function activate(context) {
                     relativePath = relativePath.replace(/\\/g, '/');
 
                     if (path.basename(relativePath).toLowerCase() === 'index.js') {
-                        relativePath = relativePath.slice(0, '/index.js'.length);
+                        relativePath = relativePath.slice(0, relativePath.length - '/index.js'.length);
                     }
 
-                    importName = _.camelCase(path.basename(relativePath).split('.')[0]);
+                    importName = caseName(path.basename(relativePath).split('.')[0]);
 
                     if (relativePath.indexOf('../') === -1) {
                         relativePath = `./${relativePath}`;
@@ -76,7 +77,7 @@ function activate(context) {
                 } else {
                     relativePath = value.label;
                     const commonName = commonNames(value.label);
-                    importName = commonName || _.camelCase(value.label);
+                    importName = commonName || caseName(value.label);
                 }
 
                 let script;
