@@ -7,7 +7,7 @@
   "engines": {
     "vscode": "^1.0.0"
   },
-  "icon": "img/icon.png",
+  "icon": "resources/images/bit.png",
   "homepage": "https://github.com/bitkompagniet/vscode_extension_quick_require",
   "license": "MIT",
   "galleryBanner": {
