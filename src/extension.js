@@ -26,7 +26,15 @@ function activate(context) {
 
             const items = [];
 
-            getPackageDeps().forEach((dep) => {
+            result.forEach((dep) => {
+                items.push({
+                    label: path.basename(dep.path),
+                    description: dep.fsPath.replace(vscode.workspace.rootPath, '').replace(/\\/g, '/'),
+                    fsPath: dep.fsPath,
+                });
+            });
+
+            getPackageDeps().sort().forEach((dep) => {
                 items.push({
                     label: dep,
                     description: 'package dependency',
@@ -34,19 +42,11 @@ function activate(context) {
                 });
             });
 
-            getCoreModules().forEach((dep) => {
+            getCoreModules().sort().forEach((dep) => {
                 items.push({
                     label: dep,
                     description: 'core module',
                     fsPath: null,
-                });
-            });
-
-            result.forEach((dep) => {
-                items.push({
-                    label: path.basename(dep.path),
-                    description: dep.fsPath.replace(vscode.workspace.rootPath, '').replace(/\\/g, '/'),
-                    fsPath: dep.fsPath,
                 });
             });
 
