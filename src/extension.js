@@ -44,13 +44,13 @@ function activate(context) {
 
             result.forEach((dep) => {
                 items.push({
-                    label: dep.path.slice(vscode.workspace.rootPath.length).split(/[\\/]/).join(' / '),
-                    description: 'local file',
+                    label: path.basename(dep.path),
+                    description: dep.fsPath.replace(vscode.workspace.rootPath, '').replace(/\\/g, '/'),
                     fsPath: dep.fsPath,
                 });
             });
 
-            vscode.window.showQuickPick(items, { placeHolder: 'select file' }).then((value) => {
+            vscode.window.showQuickPick(items, { placeHolder: 'Select dependency', matchOnDescription: true, matchOnDetail: true }).then((value) => {
                 if (!value) {
                     return;
                 }
