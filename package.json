@@ -17,8 +17,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.quickRequire",
-    "onCommand:extension.quickRequire_import"
+    "onCommand:bitk_require.quickRequire"
   ],
   "main": "./src/extension",
   "contributes": {
@@ -52,22 +51,14 @@
     },
     "commands": [
       {
-        "command": "extension.quickRequire",
-        "title": "Node require"
-      },
-      {
-        "command": "extension.quickRequire_import",
-        "title": "Node import"
+        "command": "bitk_require.quickRequire",
+        "title": "Node require/import"
       }
     ],
     "keybindings": [
       {
-        "command": "extension.quickRequire",
+        "command": "bitk_require.quickRequire",
         "key": "ctrl+shift+1"
-      },
-      {
-        "command": "extension.quickRequire_import",
-        "key": "ctrl+shift+2"
       }
     ]
   },

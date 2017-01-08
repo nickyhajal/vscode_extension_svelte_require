@@ -1,5 +1,3 @@
-
-
 module.exports = function(codeBlock) {
     let candidate = 0;
 

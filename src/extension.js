@@ -1,22 +1,21 @@
 const vscode = require('vscode'); // eslint-disable-line
 const path = require('path');
 const os = require('os');
-const _ = require('lodash');
 const commonNames = require('./common-names');
 const getCoreModules = require('./get-core-modules');
 const getPackageDeps = require('./get-package-deps');
 const getPosition = require('./get-position');
 const caseName = require('./case-name');
-
-const TYPE_REQUIRE = 0;
-const TYPE_IMPORT = 1;
+const detectFileRequireMethod = require('./detectFileRequireMethod');
+const constants = require('./constants');
+const _ = require('lodash');
 
 function activate(context) {
     const config = vscode.workspace.getConfiguration('quickrequire') || {};
     const includePattern = `/**/*.{${config.include.toString()}}`;
     const excludePattern = `**/{${config.exclude.toString()}}`;
 
-    const startPick = function(type) {
+    const startPick = function() {
         vscode.workspace.findFiles(includePattern, excludePattern, 100).then((result) => {
             const editor = vscode.window.activeTextEditor;
 
@@ -50,7 +49,11 @@ function activate(context) {
                 });
             });
 
-            vscode.window.showQuickPick(items, { placeHolder: 'Select dependency', matchOnDescription: true, matchOnDetail: true }).then((value) => {
+            vscode.window.showQuickPick(items, {
+                placeHolder: 'Select dependency',
+                matchOnDescription: true,
+                matchOnDetail: true,
+            }).then((value) => {
                 if (!value) {
                     return;
                 }
@@ -73,41 +76,56 @@ function activate(context) {
                         relativePath = `./${relativePath}`;
                     }
 
-                    relativePath = relativePath.replace('.js', '');
+                    relativePath = relativePath.replace(/\.jsx?/, '');
                 } else {
                     relativePath = value.label;
                     const commonName = commonNames(value.label);
                     importName = commonName || caseName(value.label);
                 }
 
-                let script;
-
-                if (type === TYPE_REQUIRE) {
-                    script = `const ${importName} = require('${relativePath}');`;
-                } else {
-                    script = `import ${importName} from '${relativePath}';`;
-                }
-
                 const codeBlock = editor.document.getText().split(os.EOL);
                 const lineStart = getPosition(editor.document.getText().split(os.EOL));
-                const alreadyImported = codeBlock.some(line => line === script);
+                // const cursorPosition = editor.selection.active;
 
-                if (alreadyImported) return;
+                Promise
+                    .resolve(detectFileRequireMethod(codeBlock))
+                    .then((requireMethod) => {
+                        if (requireMethod !== null) return requireMethod;
 
-                editor.edit((editBuilder) => {
-                    const position = new vscode.Position(lineStart, 0);
-                    editBuilder.insert(position, `${script}\n`);
-                });
+                        return vscode.window
+                            .showQuickPick([
+                                { label: 'require', value: constants.TYPE_REQUIRE },
+                                { label: 'import', value: constants.TYPE_IMPORT },
+                            ], { placeHolder: 'Select import style' })
+                            .then(style => style.value);
+                    })
+                    .then((requireMethod) => {
+                        let script;
+
+                        if (requireMethod === constants.TYPE_REQUIRE) {
+                            script = `const ${importName} = require('${relativePath}');`;
+                        } else {
+                            script = `import ${importName} from '${relativePath}';`;
+                        }
+
+                        return script;
+                    })
+                    .then((script) => {
+                        if (codeBlock.some(line => line === script)) return;
+
+                        editor.edit((editBuilder) => {
+                            const position = new vscode.Position(lineStart, 0);
+                            const insertText = !_.isEmpty(codeBlock[lineStart]) ? `${script}\n\n` : `${script}\n`;
+                            editBuilder.insert(position, insertText);
+                            // editBuilder.insert(cursorPosition, importName);
+                        });
+                    });
             });
         });
     };
 
-    context.subscriptions.push(vscode.commands.registerCommand('extension.quickRequire', () => {
-        startPick(TYPE_REQUIRE);
-    }));
-
-    context.subscriptions.push(vscode.commands.registerCommand('extension.quickRequire_import', () => {
-        startPick(TYPE_IMPORT);
+    context.subscriptions.push(vscode.commands.registerCommand('bitk_require.quickRequire', () => {
+        startPick();
     }));
 }
 
