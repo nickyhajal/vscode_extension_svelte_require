@@ -1,3 +1,7 @@
+# 0.4.0
+
+- FEATURE: search deep inside node modules (limited to those that are specified in dependencies).
+
 # 0.3.2
 
 - FIX: an issue where it would put the import line below other code.

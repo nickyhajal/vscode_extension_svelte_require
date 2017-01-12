@@ -9,119 +9,134 @@ const caseName = require('./case-name');
 const detectFileRequireMethod = require('./detectFileRequireMethod');
 const constants = require('./constants');
 const _ = require('lodash');
+const getPackageDeepFiles = require('./get-package-deep-files');
 
 function activate(context) {
     const config = vscode.workspace.getConfiguration('quickrequire') || {};
-    const includePattern = `/**/*.{${config.include.toString()}}`;
+    const includePattern = `**/*.{${config.include.toString()}}`;
     const excludePattern = `**/{${config.exclude.toString()}}`;
+    getPackageDeepFiles();
 
     const startPick = function() {
-        vscode.workspace.findFiles(includePattern, excludePattern, 100).then((result) => {
-            const editor = vscode.window.activeTextEditor;
+        const promiseOfProjectFiles = vscode.workspace.findFiles(includePattern, excludePattern);
 
-            if (!editor) {
-                return;
-            }
+        Promise.all([promiseOfProjectFiles, getPackageDeepFiles()])
+            .then(result => _.flatten(result))
+            .then((result) => {
+                const editor = vscode.window.activeTextEditor;
 
-            const items = [];
-
-            result.forEach((dep) => {
-                items.push({
-                    label: path.basename(dep.path),
-                    description: dep.fsPath.replace(vscode.workspace.rootPath, '').replace(/\\/g, '/'),
-                    fsPath: dep.fsPath,
-                });
-            });
-
-            getPackageDeps().sort().forEach((dep) => {
-                items.push({
-                    label: dep,
-                    description: 'package dependency',
-                    fsPath: null,
-                });
-            });
-
-            getCoreModules().sort().forEach((dep) => {
-                items.push({
-                    label: dep,
-                    description: 'core module',
-                    fsPath: null,
-                });
-            });
-
-            vscode.window.showQuickPick(items, {
-                placeHolder: 'Select dependency',
-                matchOnDescription: true,
-                matchOnDetail: true,
-            }).then((value) => {
-                if (!value) {
+                if (!editor) {
                     return;
                 }
 
-                let relativePath;
-                let importName;
+                const items = [];
 
-                if (value.fsPath) {
-                    const dirName = path.dirname(editor.document.fileName);
-                    relativePath = path.relative(dirName, value.fsPath);
-                    relativePath = relativePath.replace(/\\/g, '/');
+                getPackageDeps().sort().forEach((dep) => {
+                    items.push({
+                        label: dep,
+                        description: 'package dependency',
+                        fsPath: null,
+                    });
+                });
 
-                    if (path.basename(relativePath).toLowerCase() === 'index.js') {
-                        relativePath = relativePath.slice(0, relativePath.length - '/index.js'.length);
+                getCoreModules().sort().forEach((dep) => {
+                    items.push({
+                        label: dep,
+                        description: 'core module',
+                        fsPath: null,
+                    });
+                });
+
+                result.forEach((dep) => {
+                    items.push({
+                        label: path.basename(dep.path),
+                        description: dep.fsPath
+                            .replace(vscode.workspace.rootPath, '')
+                            .replace(/\\/g, '/'),
+                        fsPath: dep.fsPath,
+                    });
+                });
+
+                vscode.window.showQuickPick(items, {
+                    placeHolder: 'Select dependency',
+                    matchOnDescription: true,
+                    matchOnDetail: true,
+                }).then((value) => {
+                    if (!value) {
+                        return;
                     }
 
-                    importName = caseName(path.basename(relativePath).split('.')[0]);
+                    let relativePath;
+                    let importName;
 
-                    if (relativePath.indexOf('../') === -1) {
-                        relativePath = `./${relativePath}`;
-                    }
+                    if (value.fsPath) {
+                        const rootPathRelative = value.fsPath.slice(vscode.workspace.rootPath.length);
+                        const isInModules = !!rootPathRelative.match(/^\/node_modules\//i);
 
-                    relativePath = relativePath.replace(/\.jsx?/, '');
-                } else {
-                    relativePath = value.label;
-                    const commonName = commonNames(value.label);
-                    importName = commonName || caseName(value.label);
-                }
-
-                const codeBlock = editor.document.getText().split(os.EOL);
-                const lineStart = getPosition(editor.document.getText().split(os.EOL));
-                // const cursorPosition = editor.selection.active;
-
-                Promise
-                    .resolve(detectFileRequireMethod(codeBlock))
-                    .then((requireMethod) => {
-                        if (requireMethod !== null) return requireMethod;
-
-                        return vscode.window
-                            .showQuickPick([
-                                { label: 'require', value: constants.TYPE_REQUIRE },
-                                { label: 'import', value: constants.TYPE_IMPORT },
-                            ], { placeHolder: 'Select import style' })
-                            .then(style => style.value);
-                    })
-                    .then((requireMethod) => {
-                        let script;
-
-                        if (requireMethod === constants.TYPE_REQUIRE) {
-                            script = `const ${importName} = require('${relativePath}');`;
+                        if (isInModules) {
+                            relativePath = rootPathRelative.slice(14);
                         } else {
-                            script = `import ${importName} from '${relativePath}';`;
+                            const dirName = path.dirname(editor.document.fileName);
+                            relativePath = path.relative(dirName, value.fsPath);
+                            relativePath = relativePath.replace(/\\/g, '/');
                         }
 
-                        return script;
-                    })
-                    .then((script) => {
-                        if (codeBlock.some(line => line === script)) return;
+                        if (path.basename(relativePath).toLowerCase() === 'index.js') {
+                            relativePath = relativePath.slice(0, relativePath.length - '/index.js'.length);
+                        }
 
-                        editor.edit((editBuilder) => {
-                            const position = new vscode.Position(lineStart, 0);
-                            const insertText = !_.isEmpty(codeBlock[lineStart]) ? `${script}\n\n` : `${script}\n`;
-                            editBuilder.insert(position, insertText);
-                            // editBuilder.insert(cursorPosition, importName);
+                        importName = caseName(path.basename(relativePath).split('.')[0]);
+
+                        if (!isInModules && relativePath.indexOf('../') === -1) {
+                            relativePath = `./${relativePath}`;
+                        }
+
+                        relativePath = relativePath.replace(/\.jsx?/, '');
+                    } else {
+                        relativePath = value.label;
+                        const commonName = commonNames(value.label);
+                        importName = commonName || caseName(value.label);
+                    }
+
+                    const codeBlock = editor.document.getText().split(os.EOL);
+                    const lineStart = getPosition(editor.document.getText().split(os.EOL));
+                    // const cursorPosition = editor.selection.active;
+
+                    Promise
+                        .resolve(detectFileRequireMethod(codeBlock))
+                        .then((requireMethod) => {
+                            if (requireMethod !== null) return requireMethod;
+
+                            return vscode.window
+                                .showQuickPick([
+                                    { label: 'require', value: constants.TYPE_REQUIRE },
+                                    { label: 'import', value: constants.TYPE_IMPORT },
+                                ], { placeHolder: 'Select import style' })
+                                .then(style => style.value);
+                        })
+                        .then((requireMethod) => {
+                            let script;
+
+                            if (requireMethod === constants.TYPE_REQUIRE) {
+                                script = `const ${importName} = require('${relativePath}');`;
+                            } else {
+                                script = `import ${importName} from '${relativePath}';`;
+                            }
+
+                            return script;
+                        })
+                        .then((script) => {
+                            if (codeBlock.some(line => line === script)) return;
+
+                            editor.edit((editBuilder) => {
+                                const position = new vscode.Position(lineStart, 0);
+                                const insertText = !_.isEmpty(codeBlock[lineStart]) ? `${script}\n\n` : `${script}\n`;
+                                editBuilder.insert(position, insertText);
+                                // editBuilder.insert(cursorPosition, importName);
+                            });
                         });
-                    });
+                });
             });
-        });
     };
 
     context.subscriptions.push(vscode.commands.registerCommand('bitk_require.quickRequire', () => {
