@@ -9,6 +9,7 @@ Use the command dialog or the shortcut `Ctrl+Shift+1`.
 * The style (import vs require) will be auto-detected one a per-file level. It will ask for the first dependency.
 * Typical naming substitutions (for example, `lodash` will be named `_` and jQuery will be `$`).
 * If the import already exists, it will not add a duplicate.
+* Can also search files within modules in the dependencies list. Default is off, as performance and usability might take a hit from a lot of files, but it can be enabled in the configuration.
 
 ## Acknowledgements
 
