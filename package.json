@@ -24,7 +24,7 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "quick require configuration",
+      "title": "Bitkompagniet Node Require",
       "properties": {
         "quickrequire.include": {
           "type": "array",
@@ -47,6 +47,11 @@
             "tmp"
           ],
           "description": "defines files and folders to exclude"
+        },
+        "quickrequire.search_module_files": {
+          "type": "boolean",
+          "default": false,
+          "description": "whether we want to search files inside node module directories (performance might be sluggish)"
         }
       }
     },

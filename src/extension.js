@@ -15,12 +15,14 @@ function activate(context) {
     const config = vscode.workspace.getConfiguration('quickrequire') || {};
     const includePattern = `**/*.{${config.include.toString()}}`;
     const excludePattern = `**/{${config.exclude.toString()}}`;
-    getPackageDeepFiles();
+    const getDeepFilesIfEnabled = () => (config.search_module_files ? getPackageDeepFiles() : Promise.resolve([]));
+
+    getDeepFilesIfEnabled();
 
     const startPick = function() {
         const promiseOfProjectFiles = vscode.workspace.findFiles(includePattern, excludePattern);
 
-        Promise.all([promiseOfProjectFiles, getPackageDeepFiles()])
+        Promise.all([promiseOfProjectFiles, getDeepFilesIfEnabled()])
             .then(result => _.flatten(result))
             .then((result) => {
                 const editor = vscode.window.activeTextEditor;
