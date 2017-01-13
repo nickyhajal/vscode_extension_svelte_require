@@ -17,6 +17,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onLanguage:javascript",
     "onCommand:bitk_require.quickRequire"
   ],
   "main": "./src/extension",

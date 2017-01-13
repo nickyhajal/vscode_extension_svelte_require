@@ -1,6 +1,8 @@
 # 0.4.0
 
-- FEATURE: search deep inside node modules (limited to those that are specified in dependencies).
+- Search deep inside node modules (limited to those that are specified in dependencies).
+- Improve the info given about each file.
+- FIX: if trying to require the current file, show a warning instead of creating a broken reference.
 
 # 0.3.2
 

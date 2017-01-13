@@ -34,7 +34,7 @@ function activate(context) {
                 getPackageDeps().sort().forEach((dep) => {
                     items.push({
                         label: dep,
-                        description: 'package dependency',
+                        description: 'module',
                         fsPath: null,
                     });
                 });
@@ -48,11 +48,18 @@ function activate(context) {
                 });
 
                 result.forEach((dep) => {
+                    const rootRelative = dep.fsPath
+                        .replace(vscode.workspace.rootPath, '')
+                        .replace(/\\/g, '/');
+
+                    const label = path.basename(dep.path).match(/index\.jsx?/)
+                        ? `${path.basename(path.dirname(dep.path))}/${path.basename(dep.path)}`
+                        : path.basename(dep.path);
+
                     items.push({
-                        label: path.basename(dep.path),
-                        description: dep.fsPath
-                            .replace(vscode.workspace.rootPath, '')
-                            .replace(/\\/g, '/'),
+                        label,
+                        detail: rootRelative.replace(/^\/node_modules\//, ''),
+                        description: rootRelative.match(/^\/node_modules\//) ? 'file inside module' : 'project file',
                         fsPath: dep.fsPath,
                     });
                 });
@@ -70,6 +77,11 @@ function activate(context) {
                     let importName;
 
                     if (value.fsPath) {
+                        if (editor.document.fileName === value.fsPath) {
+                            vscode.window.showErrorMessage('You are trying to require this file.');
+                            return;
+                        }
+
                         const rootPathRelative = value.fsPath.slice(vscode.workspace.rootPath.length);
                         const isInModules = !!rootPathRelative.match(/^\/node_modules\//i);
 
