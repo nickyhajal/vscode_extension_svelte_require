@@ -5,7 +5,7 @@ const _ = require('lodash');
 const SEARCH_INTERVAL = 2 * 60 * 1000;
 
 function searchDepFiles() {
-    const config = vscode.workspace.getConfiguration('quickrequire') || {};
+    const config = vscode.workspace.getConfiguration('bitk_node_require') || {};
     const includePattern = `**/*.{${config.include.toString()}}`;
     const excludePattern = `**/{${config.exclude.toString()}}`;
 

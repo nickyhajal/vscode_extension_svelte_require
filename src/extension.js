@@ -12,7 +12,7 @@ const _ = require('lodash');
 const getPackageDeepFiles = require('./get-package-deep-files');
 
 function activate(context) {
-    const config = vscode.workspace.getConfiguration('quickrequire') || {};
+    const config = vscode.workspace.getConfiguration('bitk_node_require') || {};
     const includePattern = `**/*.{${config.include.toString()}}`;
     const excludePattern = `**/{${config.exclude.toString()}}`;
     const getDeepFilesIfEnabled = () => (config.search_module_files ? getPackageDeepFiles() : Promise.resolve([]));
@@ -153,7 +153,7 @@ function activate(context) {
             });
     };
 
-    context.subscriptions.push(vscode.commands.registerCommand('bitk_require.quickRequire', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('bitk_require.require', () => {
         startPick();
     }));
 }

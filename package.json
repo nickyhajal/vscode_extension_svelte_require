@@ -18,7 +18,7 @@
   ],
   "activationEvents": [
     "onLanguage:javascript",
-    "onCommand:bitk_require.quickRequire"
+    "onCommand:bitk_require.require"
   ],
   "main": "./src/extension",
   "contributes": {
@@ -26,7 +26,7 @@
       "type": "object",
       "title": "Bitkompagniet Node Require",
       "properties": {
-        "quickrequire.include": {
+        "bitk_node_require.include": {
           "type": "array",
           "default": [
             "js",
@@ -36,7 +36,7 @@
           ],
           "description": "include files to search for"
         },
-        "quickrequire.exclude": {
+        "bitk_node_require.exclude": {
           "type": "array",
           "default": [
             "node_modules",
@@ -48,7 +48,7 @@
           ],
           "description": "defines files and folders to exclude"
         },
-        "quickrequire.search_module_files": {
+        "bitk_node_require.search_module_files": {
           "type": "boolean",
           "default": false,
           "description": "whether we want to search files inside node module directories (performance might be sluggish)"
@@ -57,13 +57,13 @@
     },
     "commands": [
       {
-        "command": "bitk_require.quickRequire",
+        "command": "bitk_require.require",
         "title": "Node require/import"
       }
     ],
     "keybindings": [
       {
-        "command": "bitk_require.quickRequire",
+        "command": "bitk_require.require",
         "key": "ctrl+shift+1"
       }
     ]
