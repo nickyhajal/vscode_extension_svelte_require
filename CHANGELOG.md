@@ -1,6 +1,7 @@
 # 0.5.0
 
 - Make a command for requiring/importing **and** insert the reference at the cursor position.
+- FIX: namespace consistency.
 
 # 0.4.0
 
