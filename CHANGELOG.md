@@ -1,3 +1,7 @@
+# 0.5.1
+
+- FIX: missing activation event.
+
 # 0.5.0
 
 - Make a command for requiring/importing **and** insert the reference at the cursor position.

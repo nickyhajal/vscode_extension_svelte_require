@@ -18,7 +18,8 @@
   ],
   "activationEvents": [
     "onLanguage:javascript",
-    "onCommand:bitk_node_require.require"
+    "onCommand:bitk_node_require.require",
+    "onCommand:bitk_node_require.requireAndInsert"
   ],
   "main": "./src/extension",
   "contributes": {
