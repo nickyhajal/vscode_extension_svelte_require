@@ -1,3 +1,7 @@
+# 0.5.0
+
+- Make a command for requiring/importing **and** insert the reference at the cursor position.
+
 # 0.4.0
 
 - Search deep inside node modules (limited to those that are specified in dependencies). **Disabled** per default.

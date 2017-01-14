@@ -19,7 +19,7 @@ function activate(context) {
 
     getDeepFilesIfEnabled();
 
-    const startPick = function() {
+    const startPick = function({ insertAtCursor = false }) {
         const promiseOfProjectFiles = vscode.workspace.findFiles(includePattern, excludePattern);
 
         Promise.all([promiseOfProjectFiles, getDeepFilesIfEnabled()])
@@ -114,7 +114,7 @@ function activate(context) {
 
                     const codeBlock = editor.document.getText().split(os.EOL);
                     const lineStart = getPosition(editor.document.getText().split(os.EOL));
-                    // const cursorPosition = editor.selection.active;
+                    const cursorPosition = editor.selection.active;
 
                     Promise
                         .resolve(detectFileRequireMethod(codeBlock))
@@ -140,13 +140,11 @@ function activate(context) {
                             return script;
                         })
                         .then((script) => {
-                            if (codeBlock.some(line => line === script)) return;
-
                             editor.edit((editBuilder) => {
                                 const position = new vscode.Position(lineStart, 0);
                                 const insertText = !_.isEmpty(codeBlock[lineStart]) ? `${script}\n\n` : `${script}\n`;
-                                editBuilder.insert(position, insertText);
-                                // editBuilder.insert(cursorPosition, importName);
+                                if (!codeBlock.some(line => line === script)) editBuilder.insert(position, insertText);
+                                if (insertAtCursor) editBuilder.insert(cursorPosition, importName);
                             });
                         });
                 });
@@ -154,7 +152,11 @@ function activate(context) {
     };
 
     context.subscriptions.push(vscode.commands.registerCommand('bitk_require.require', () => {
-        startPick();
+        startPick({ insertAtCursor: false });
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand('bitk_require.requireAndInsert', () => {
+        startPick({ insertAtCursor: true });
     }));
 }
 

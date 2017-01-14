@@ -1,6 +1,6 @@
 This module can import or require node modules and local files.
 
-Use the command dialog or the shortcut `Ctrl+Shift+1`.
+Use the command dialog or the shortcut `Ctrl+Shift+1`. You can also use `Ctrl+Shift+2` to import/require and insert the reference at the current cursor position.
 
 ## Features
 

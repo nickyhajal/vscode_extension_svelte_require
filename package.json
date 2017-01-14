@@ -59,12 +59,20 @@
       {
         "command": "bitk_require.require",
         "title": "Node require/import"
+      },
+      {
+        "command": "bitk_require.requireAndInsert",
+        "title": "Node require/import and insert reference"
       }
     ],
     "keybindings": [
       {
         "command": "bitk_require.require",
         "key": "ctrl+shift+1"
+      },
+      {
+        "command": "bitk_require.requireAndInsert",
+        "key": "ctrl+shift+2"
       }
     ]
   },
