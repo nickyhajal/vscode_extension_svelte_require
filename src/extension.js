@@ -151,11 +151,11 @@ function activate(context) {
             });
     };
 
-    context.subscriptions.push(vscode.commands.registerCommand('bitk_require.require', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('bitk_node_require.require', () => {
         startPick({ insertAtCursor: false });
     }));
 
-    context.subscriptions.push(vscode.commands.registerCommand('bitk_require.requireAndInsert', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('bitk_node_require.requireAndInsert', () => {
         startPick({ insertAtCursor: true });
     }));
 }
