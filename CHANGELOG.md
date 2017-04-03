@@ -1,3 +1,7 @@
+# 0.6.0
+
+- FEATURE: Make the import aliases configurable.
+
 # 0.5.1
 
 - FIX: missing activation event.
