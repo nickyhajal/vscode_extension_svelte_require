@@ -79,6 +79,7 @@ function activate(context) {
                     let importName;
 
                     if (value.fsPath) {
+                        // A local file was selected
                         if (editor.document.fileName === value.fsPath) {
                             vscode.window.showErrorMessage('You are trying to require this file.');
                             return;
@@ -95,18 +96,26 @@ function activate(context) {
                             relativePath = relativePath.replace(/\\/g, '/');
                         }
 
-                        if (path.basename(relativePath).toLowerCase() === 'index.js') {
-                            relativePath = relativePath.slice(0, relativePath.length - '/index.js'.length);
-                        }
-
-                        importName = caseName(path.basename(relativePath).split('.')[0]);
-
-                        if (!isInModules && relativePath.indexOf('../') === -1) {
+                        if (relativePath === 'index.js') {
+                            // We have selected index.js in the same directory as the source file
+                            importName = path.basename(path.dirname(editor.document.fileName));
                             relativePath = `./${relativePath}`;
-                        }
+                        } else {
+                            // We have selected a file from another directory
+                            if (path.basename(relativePath).toLowerCase() === 'index.js') {
+                                relativePath = relativePath.slice(0, relativePath.length - '/index.js'.length);
+                            }
 
-                        relativePath = relativePath.replace(/\.jsx?/, '');
+                            importName = caseName(path.basename(relativePath).split('.')[0]);
+
+                            if (!isInModules && relativePath.indexOf('../') === -1) {
+                                relativePath = `./${relativePath}`;
+                            }
+
+                            relativePath = relativePath.replace(/\.jsx?/, '');
+                        }
                     } else {
+                        // A core module or dependency was selected
                         relativePath = value.label;
                         const commonName = commonNames(value.label, config.aliases);
                         importName = commonName || caseName(value.label);
