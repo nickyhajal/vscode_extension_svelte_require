@@ -108,7 +108,7 @@ function activate(context) {
                         relativePath = relativePath.replace(/\.jsx?/, '');
                     } else {
                         relativePath = value.label;
-                        const commonName = commonNames(value.label);
+                        const commonName = commonNames(value.label, config.aliases);
                         importName = commonName || caseName(value.label);
                     }
 
