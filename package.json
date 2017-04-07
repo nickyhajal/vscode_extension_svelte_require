@@ -2,7 +2,7 @@
   "name": "vs-code-bitkompagniet-require",
   "displayName": "Bitkompagniet Node Require",
   "description": "Require files, dependencies and core modules",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "publisher": "bitkompagniet",
   "engines": {
     "vscode": "^1.0.0"
