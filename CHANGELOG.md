@@ -1,3 +1,7 @@
+# 0.6.2
+
+- FIX: Skip 'use strict' before inserting the require (thx to **@jhnns**).
+
 # 0.6.1
 
 - FIX: requiring index.js from same directory as source file produced invalid result.
