@@ -1,3 +1,12 @@
+# 0.6.1
+
+- FIX: requiring index.js from same directory as source file produced invalid result.
+- FIX: failed silently when there was no package.json in the root folder.
+
+# 0.6.0
+
+- FEATURE: Make the import aliases configurable.
+
 # 0.5.1
 
 - FIX: missing activation event.
