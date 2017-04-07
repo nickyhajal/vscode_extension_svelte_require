@@ -16,3 +16,9 @@ Use the command dialog or the shortcut `Ctrl+Shift+1`. You can also use `Ctrl+Sh
 This module is a fork from [Quick Require](https://github.com/milkmidi/vscode_extension_quick_require), which was
 good, but very basic. The typical namings was taken from [NodeRequirer](https://github.com/ganemone/NodeRequirer) for
 Sublime Text.
+
+## Bitkompagniet
+
+[Bitkompagniet ApS](http://bitkompagniet.dk/) is a Danish development company specializing in tailored web applications for customers. We use modern tools and methods to get the work done, while still keeping a focus on maintainability and extensibility.
+
+The things we develop as open source software will stay open and free.

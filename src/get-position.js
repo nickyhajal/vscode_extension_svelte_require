@@ -1,11 +1,11 @@
 const _ = require('lodash');
 
 function isRequire(line) {
-    return line.match(/require/) || line.match(/^import/);
+    return line.match(/require\(/) || line.match(/^import/);
 }
 
 function isCommentOrEmpty(line) {
-    return _.isEmpty(line) || line.match(/^\s*\/\//);
+    return _.isEmpty(line) || line.match(/^\s*\/\//) || line.match(/^\s*["']use strict["']/);
 }
 
 module.exports = function(codeBlock) {
