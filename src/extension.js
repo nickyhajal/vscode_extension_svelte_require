@@ -10,10 +10,7 @@ const detectFileRequireMethod = require('./detectFileRequireMethod');
 const constants = require('./constants');
 const _ = require('lodash');
 const getPackageDeepFiles = require('./get-package-deep-files');
-
-function isRequire(line) {
-    return line.match(/require\(/) || line.match(/^import/);
-}
+const isRequire = require('./is-require');
 
 function activate(context) {
     const config = vscode.workspace.getConfiguration('bitk_node_require') || {};

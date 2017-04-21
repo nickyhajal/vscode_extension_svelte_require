@@ -1,8 +1,5 @@
 const _ = require('lodash');
-
-function isRequire(line) {
-    return line.match(/require\(/) || line.match(/^import/);
-}
+const isRequire = require('./is-require');
 
 function isCommentOrEmpty(line) {
     return _.isEmpty(line) || line.match(/^\s*\/\//) || line.match(/^\s*["']use strict["']/);
@@ -14,10 +11,8 @@ function isLocalRequire(line) {
 
 module.exports = function(codeBlock, placeWithExternals) {
     let candidate = 0;
-
     for (let i = 0; i < codeBlock.length; i += 1) {
         const line = codeBlock[i];
-
         if (isRequire(line) && (
             !placeWithExternals ||
             (placeWithExternals && !isLocalRequire(line))
@@ -28,6 +23,5 @@ module.exports = function(codeBlock, placeWithExternals) {
             break;
         }
     }
-
     return candidate;
 };
