@@ -109,7 +109,9 @@ function activate(context) {
                                 relativePath = relativePath.slice(0, relativePath.length - '/index.js'.length);
                             }
 
-                            importName = caseName(path.basename(relativePath).split('.')[0]);
+                            const baseName = caseName(path.basename(relativePath).split('.')[0]);
+                            const aliasName = commonNames(baseName, config.aliases);
+                            importName = aliasName || baseName;
 
                             if (!isInModules && relativePath.indexOf('../') === -1) {
                                 relativePath = `./${relativePath}`;
