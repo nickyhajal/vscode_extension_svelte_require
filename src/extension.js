@@ -10,6 +10,7 @@ const detectFileRequireMethod = require('./detectFileRequireMethod');
 const constants = require('./constants');
 const _ = require('lodash');
 const getPackageDeepFiles = require('./get-package-deep-files');
+const isRequire = require('./is-require');
 
 function activate(context) {
     const config = vscode.workspace.getConfiguration('bitk_node_require') || {};
@@ -77,9 +78,11 @@ function activate(context) {
 
                     let relativePath;
                     let importName;
+                    let isExternal;
 
                     if (value.fsPath) {
                         // A local file was selected
+                        isExternal = false;
                         if (editor.document.fileName === value.fsPath) {
                             vscode.window.showErrorMessage('You are trying to require this file.');
                             return;
@@ -116,13 +119,14 @@ function activate(context) {
                         }
                     } else {
                         // A core module or dependency was selected
+                        isExternal = true;
                         relativePath = value.label;
                         const commonName = commonNames(value.label, config.aliases);
                         importName = commonName || caseName(value.label);
                     }
 
                     const codeBlock = editor.document.getText().split(os.EOL);
-                    const lineStart = getPosition(editor.document.getText().split(os.EOL));
+                    const lineStart = getPosition(editor.document.getText().split(os.EOL), isExternal);
                     const cursorPosition = editor.selection.active;
 
                     Promise
@@ -151,7 +155,8 @@ function activate(context) {
                         .then((script) => {
                             editor.edit((editBuilder) => {
                                 const position = new vscode.Position(lineStart, 0);
-                                const insertText = !_.isEmpty(codeBlock[lineStart]) ? `${script}\n\n` : `${script}\n`;
+                                const existingLine = codeBlock[lineStart];
+                                const insertText = !_.isEmpty(existingLine) && !isRequire(existingLine) ? `${script}\n\n` : `${script}\n`;
                                 if (!codeBlock.some(line => line === script)) editBuilder.insert(position, insertText);
                                 if (insertAtCursor) editBuilder.insert(cursorPosition, importName);
                             });
