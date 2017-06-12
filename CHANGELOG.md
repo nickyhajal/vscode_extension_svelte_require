@@ -1,6 +1,7 @@
 # 0.7.0
 
 - Absolute imports are inserted before relative imports (by **@nickyhajal**).
+- Allow aliases for local imports (by **@nickyhajal**).
 
 # 0.6.2
 
