@@ -1,3 +1,7 @@
+# 0.7.0
+
+- Absolute imports are inserted before relative imports (by **@nickyhajal**).
+
 # 0.6.2
 
 - FIX: Skip 'use strict' before inserting the require (thx to **@jhnns**).
