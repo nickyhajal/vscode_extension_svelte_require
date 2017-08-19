@@ -14,5 +14,4 @@ Use the command dialog or the shortcut `Ctrl+Shift+1`. You can also use `Ctrl+Sh
 
 ## Acknowledgements
 
-This module is a fork from [Bitkompagniet Node Require](https://github.com/bitkompagniet/vscode_extension_quick_require), which was itself a fork of [Quick Require](https://github.com/milkmidi/vscode_extension_quick_require). The typical namings were taken from [NodeRequirer](https://github.com/ganemone/NodeRequirer) for
-Sublime Text.
+This module is a fork from [Bitkompagniet Node Require](https://github.com/bitkompagniet/vscode_extension_quick_require), which was itself a fork of [Quick Require](https://github.com/milkmidi/vscode_extension_quick_require). The typical namings were taken from [NodeRequirer](https://github.com/ganemone/NodeRequirer) for Sublime Text.

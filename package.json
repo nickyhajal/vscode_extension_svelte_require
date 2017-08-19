@@ -2,7 +2,7 @@
     "name": "vs-code-node-require",
     "displayName": "Node Require",
     "description": "Require files, dependencies and core modules",
-    "version": "1.0.0",
+    "version": "1.0.3",
     "publisher": "tgreen7",
     "engines": {
         "vscode": "^1.0.0"
@@ -10,14 +10,10 @@
     "homepage": "https://github.com/tgreen7/vscode_extension_node_require",
     "repository": {
         "type": "git",
-        "url": "https://github.com/tgreen7/vscode_extension_node_require" 
+        "url": "https://github.com/tgreen7/vscode_extension_node_require"
     },
     "license": "MIT",
     "icon": "resources/images/logo.png",
-    "galleryBanner": {
-        "color": "#4073a5",
-        "theme": "dark"
-    },
     "categories": [
         "Other"
     ],
