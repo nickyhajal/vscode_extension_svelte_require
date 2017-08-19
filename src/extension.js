@@ -23,178 +23,168 @@ function activate(context) {
     )
     const items = []
 
-    getPackageDeps()
-      .then(packageDepsArray => {
-        const editor = vscode.window.activeTextEditor
-        if (!editor) return
+    Promise.all([getPackageDeps(), promiseOfProjectFiles]).then(result => {
+      const editor = vscode.window.activeTextEditor
+      if (!editor) return
 
-        packageDepsArray.sort().forEach(dep => {
-          items.push({
-            label: dep,
-            description: 'module',
-            fsPath: null
-          })
+      const packageDepsArray = result[0]
+      const projectFiles = result[1]
+
+      packageDepsArray.sort().forEach(dep => {
+        items.push({
+          label: dep,
+          description: 'module',
+          fsPath: null
         })
       })
-      .then(() => promiseOfProjectFiles)
-      .then(result => {
-        const editor = vscode.window.activeTextEditor
-        if (!editor) return
 
-        getCoreModules().sort().forEach(dep => {
-          items.push({
-            label: dep,
-            description: 'core module',
-            fsPath: null
-          })
+      getCoreModules().forEach(dep => {
+        items.push({
+          label: dep,
+          description: 'core module',
+          fsPath: null
         })
+      })
 
-        result.forEach(dep => {
-          const rootRelative = dep.fsPath
-            .replace(vscode.workspace.rootPath, '')
-            .replace(/\\/g, '/')
+      projectFiles.forEach(dep => {
+        const rootRelative = dep.fsPath
+          .replace(vscode.workspace.rootPath, '')
+          .replace(/\\/g, '/')
 
-          const label = path.basename(dep.path).match(/index\.jsx?/)
-            ? `${path.basename(path.dirname(dep.path))}/${path.basename(
-                dep.path
-              )}`
-            : path.basename(dep.path)
+        const label = path.basename(dep.path).match(/index\.jsx?/)
+          ? `${path.basename(path.dirname(dep.path))}/${path.basename(
+              dep.path
+            )}`
+          : path.basename(dep.path)
 
-          items.push({
-            label,
-            detail: rootRelative.replace(/^\/node_modules\//, ''),
-            description: rootRelative.match(/^\/node_modules\//)
-              ? 'file inside module'
-              : 'project file',
-            fsPath: dep.fsPath
-          })
+        items.push({
+          label,
+          detail: rootRelative.replace(/^\/node_modules\//, ''),
+          description: rootRelative.match(/^\/node_modules\//)
+            ? 'file inside module'
+            : 'project file',
+          fsPath: dep.fsPath
         })
+      })
 
-        vscode.window
-          .showQuickPick(items, {
-            placeHolder: 'Select dependency',
-            matchOnDescription: true,
-            matchOnDetail: true
-          })
-          .then(value => {
-            if (!value) {
+      vscode.window
+        .showQuickPick(items, {
+          placeHolder: 'Select dependency',
+          matchOnDescription: true,
+          matchOnDetail: true
+        })
+        .then(value => {
+          if (!value) return
+
+          let relativePath
+          let importName
+          let isExternal
+
+          if (value.fsPath) {
+            // A local file was selected
+            isExternal = false
+            if (editor.document.fileName === value.fsPath) {
+              vscode.window.showErrorMessage(
+                'You are trying to require this file.'
+              )
               return
             }
 
-            let relativePath
-            let importName
-            let isExternal
+            const rootPathRelative = value.fsPath.slice(
+              vscode.workspace.rootPath.length
+            )
+            const isInModules = !!rootPathRelative.match(/^\/node_modules\//i)
 
-            if (value.fsPath) {
-              // A local file was selected
-              isExternal = false
-              if (editor.document.fileName === value.fsPath) {
-                vscode.window.showErrorMessage(
-                  'You are trying to require this file.'
-                )
-                return
-              }
-
-              const rootPathRelative = value.fsPath.slice(
-                vscode.workspace.rootPath.length
-              )
-              const isInModules = !!rootPathRelative.match(/^\/node_modules\//i)
-
-              if (isInModules) {
-                relativePath = rootPathRelative.slice(14)
-              } else {
-                const dirName = path.dirname(editor.document.fileName)
-                relativePath = path.relative(dirName, value.fsPath)
-                relativePath = relativePath.replace(/\\/g, '/')
-              }
-
-              if (relativePath === 'index.js') {
-                // We have selected index.js in the same directory as the source file
-                importName = path.basename(
-                  path.dirname(editor.document.fileName)
-                )
-                relativePath = `./${relativePath}`
-              } else {
-                // We have selected a file from another directory
-                if (path.basename(relativePath).toLowerCase() === 'index.js') {
-                  relativePath = relativePath.slice(
-                    0,
-                    relativePath.length - '/index.js'.length
-                  )
-                }
-
-                const baseName = caseName(
-                  path.basename(relativePath).split('.')[0]
-                )
-                const aliasName = commonNames(baseName, config.aliases)
-                importName = aliasName || baseName
-
-                if (!isInModules && relativePath.indexOf('../') === -1) {
-                  relativePath = `./${relativePath}`
-                }
-
-                relativePath = relativePath.replace(/\.jsx?/, '')
-              }
+            if (isInModules) {
+              relativePath = rootPathRelative.slice(14)
             } else {
-              // A core module or dependency was selected
-              isExternal = true
-              relativePath = value.label
-              const commonName = commonNames(value.label, config.aliases)
-              importName = commonName || caseName(value.label)
+              const dirName = path.dirname(editor.document.fileName)
+              relativePath = path.relative(dirName, value.fsPath)
+              relativePath = relativePath.replace(/\\/g, '/')
             }
 
-            const codeBlock = editor.document.getText().split(os.EOL)
-            const lineStart = getPosition(
-              editor.document.getText().split(os.EOL),
-              isExternal
-            )
-            const cursorPosition = editor.selection.active
+            if (relativePath === 'index.js') {
+              // We have selected index.js in the same directory as the source file
+              importName = path.basename(path.dirname(editor.document.fileName))
+              relativePath = `./${relativePath}`
+            } else {
+              // We have selected a file from another directory
+              if (path.basename(relativePath).toLowerCase() === 'index.js') {
+                relativePath = relativePath.slice(
+                  0,
+                  relativePath.length - '/index.js'.length
+                )
+              }
 
-            Promise.resolve(detectFileRequireMethod(codeBlock))
-              .then(requireMethod => {
-                if (requireMethod !== null) return requireMethod
+              const baseName = caseName(
+                path.basename(relativePath).split('.')[0]
+              )
+              const aliasName = commonNames(baseName, config.aliases)
+              importName = aliasName || baseName
 
-                return vscode.window
-                  .showQuickPick(
-                    [
-                      { label: 'require', value: constants.TYPE_REQUIRE },
-                      { label: 'import', value: constants.TYPE_IMPORT }
-                    ],
-                    { placeHolder: 'Select import style' }
-                  )
-                  .then(style => style.value)
+              if (!isInModules && relativePath.indexOf('../') === -1) {
+                relativePath = `./${relativePath}`
+              }
+
+              relativePath = relativePath.replace(/\.jsx?/, '')
+            }
+          } else {
+            // A core module or dependency was selected
+            isExternal = true
+            relativePath = value.label
+            const commonName = commonNames(value.label, config.aliases)
+            importName = commonName || caseName(value.label)
+          }
+
+          const codeBlock = editor.document.getText().split(os.EOL)
+          const lineStart = getPosition(codeBlock, isExternal)
+          const cursorPosition = editor.selection.active
+
+          Promise.resolve(detectFileRequireMethod(codeBlock))
+            .then(requireMethod => {
+              if (requireMethod !== null) return requireMethod
+
+              return vscode.window
+                .showQuickPick(
+                  [
+                    { label: 'require', value: constants.TYPE_REQUIRE },
+                    { label: 'import', value: constants.TYPE_IMPORT }
+                  ],
+                  { placeHolder: 'Select import style' }
+                )
+                .then(style => style.value)
+            })
+            .then(requireMethod => {
+              let script
+
+              if (requireMethod === constants.TYPE_REQUIRE) {
+                script = `const ${importName} = require('${relativePath}')`
+              } else {
+                script = `import ${importName} from '${relativePath}'`
+              }
+
+              if (config.semi) {
+                script += ';'
+              }
+
+              return script
+            })
+            .then(script => {
+              editor.edit(editBuilder => {
+                const position = new vscode.Position(lineStart, 0)
+                const existingLine = codeBlock[lineStart]
+                const insertText =
+                  !_.isEmpty(existingLine) && !isRequire(existingLine)
+                    ? `${script}\n\n`
+                    : `${script}\n`
+                if (!codeBlock.some(line => line === script))
+                  editBuilder.insert(position, insertText)
+                if (insertAtCursor)
+                  editBuilder.insert(cursorPosition, importName)
               })
-              .then(requireMethod => {
-                let script
-
-                if (requireMethod === constants.TYPE_REQUIRE) {
-                  script = `const ${importName} = require('${relativePath}')`
-                } else {
-                  script = `import ${importName} from '${relativePath}'`
-                }
-
-                if (config.semi) {
-                  script += ';'
-                }
-
-                return script
-              })
-              .then(script => {
-                editor.edit(editBuilder => {
-                  const position = new vscode.Position(lineStart, 0)
-                  const existingLine = codeBlock[lineStart]
-                  const insertText =
-                    !_.isEmpty(existingLine) && !isRequire(existingLine)
-                      ? `${script}\n\n`
-                      : `${script}\n`
-                  if (!codeBlock.some(line => line === script))
-                    editBuilder.insert(position, insertText)
-                  if (insertAtCursor)
-                    editBuilder.insert(cursorPosition, importName)
-                })
-              })
-          })
-      })
+            })
+        })
+    })
   }
 
   context.subscriptions.push(
