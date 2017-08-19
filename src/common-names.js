@@ -1,3 +1,3 @@
 module.exports = function(target, source = {}) {
-    return (target in source) ? source[target] : null;
-};
+  return target in source ? source[target] : null
+}
