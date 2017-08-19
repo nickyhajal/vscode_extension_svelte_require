@@ -9,38 +9,34 @@ const caseName = require('./case-name');
 const detectFileRequireMethod = require('./detectFileRequireMethod');
 const constants = require('./constants');
 const _ = require('lodash');
-const getPackageDeepFiles = require('./get-package-deep-files');
 const isRequire = require('./is-require');
 
 function activate(context) {
-    const config = vscode.workspace.getConfiguration('bitk_node_require') || {};
+    const config = vscode.workspace.getConfiguration('node_require') || {};
     const includePattern = `**/*.{${config.include.toString()}}`;
     const excludePattern = `**/{${config.exclude.toString()}}`;
-    const getDeepFilesIfEnabled = () => (config.search_module_files ? getPackageDeepFiles() : Promise.resolve([]));
-
-    getDeepFilesIfEnabled();
 
     const startPick = function({ insertAtCursor = false }) {
         const promiseOfProjectFiles = vscode.workspace.findFiles(includePattern, excludePattern);
+        const items = [];
 
-        Promise.all([promiseOfProjectFiles, getDeepFilesIfEnabled()])
-            .then(result => _.flatten(result))
-            .then((result) => {
+        getPackageDeps()
+            .then((packageDepsArray) => {
                 const editor = vscode.window.activeTextEditor;
-
-                if (!editor) {
-                    return;
-                }
-
-                const items = [];
-
-                getPackageDeps().sort().forEach((dep) => {
+                if (!editor) return;
+                
+                packageDepsArray.sort().forEach((dep) => {
                     items.push({
                         label: dep,
                         description: 'module',
                         fsPath: null,
                     });
                 });
+            })
+            .then(() => promiseOfProjectFiles)
+            .then((result) => {
+                const editor = vscode.window.activeTextEditor;
+                if (!editor) return;
 
                 getCoreModules().sort().forEach((dep) => {
                     items.push({
@@ -147,9 +143,13 @@ function activate(context) {
                             let script;
 
                             if (requireMethod === constants.TYPE_REQUIRE) {
-                                script = `const ${importName} = require('${relativePath}');`;
+                                script = `const ${importName} = require('${relativePath}')`;
                             } else {
-                                script = `import ${importName} from '${relativePath}';`;
+                                script = `import ${importName} from '${relativePath}'`;
+                            }
+
+                            if (config.semi) {
+                                script += ';'
                             }
 
                             return script;
@@ -167,11 +167,11 @@ function activate(context) {
             });
     };
 
-    context.subscriptions.push(vscode.commands.registerCommand('bitk_node_require.require', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('node_require.require', () => {
         startPick({ insertAtCursor: false });
     }));
 
-    context.subscriptions.push(vscode.commands.registerCommand('bitk_node_require.requireAndInsert', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('node_require.requireAndInsert', () => {
         startPick({ insertAtCursor: true });
     }));
 }

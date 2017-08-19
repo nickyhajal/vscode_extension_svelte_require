@@ -1,14 +1,13 @@
 {
-  "name": "vs-code-bitkompagniet-require",
-  "displayName": "Bitkompagniet Node Require",
+  "name": "vs-code-node-require",
+  "displayName": "Node Require",
   "description": "Require files, dependencies and core modules",
-  "version": "0.7.0",
-  "publisher": "bitkompagniet",
+  "version": "0.1.0",
+  "publisher": "tgreen",
   "engines": {
     "vscode": "^1.0.0"
   },
-  "icon": "resources/images/bit.png",
-  "homepage": "https://github.com/bitkompagniet/vscode_extension_quick_require",
+  "homepage": "https://github.com/tgreen7/vscode_extension_node_require",
   "license": "MIT",
   "galleryBanner": {
     "color": "#bdc3c7"
@@ -18,16 +17,16 @@
   ],
   "activationEvents": [
     "onLanguage:javascript",
-    "onCommand:bitk_node_require.require",
-    "onCommand:bitk_node_require.requireAndInsert"
+    "onCommand:node_require.require",
+    "onCommand:node_require.requireAndInsert"
   ],
   "main": "./src/extension",
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "Bitkompagniet Node Require",
+      "title": "Node Require",
       "properties": {
-        "bitk_node_require.include": {
+        "node_require.include": {
           "type": "array",
           "default": [
             "js",
@@ -37,7 +36,7 @@
           ],
           "description": "include files to search for"
         },
-        "bitk_node_require.exclude": {
+        "node_require.exclude": {
           "type": "array",
           "default": [
             "node_modules",
@@ -49,12 +48,7 @@
           ],
           "description": "defines files and folders to exclude"
         },
-        "bitk_node_require.search_module_files": {
-          "type": "boolean",
-          "default": false,
-          "description": "whether we want to search files inside node module directories (performance might be sluggish)"
-        },
-        "bitk_node_require.aliases": {
+        "node_require.aliases": {
           "type": "object",
           "description": "A mapping from module name to a different alias (the variable name it is assigned to)",
           "default": {
@@ -125,26 +119,31 @@
             "r": "rethinkdb",
             "underscore.string": "s"
           }
+        },
+        "node_require.semi": {
+          "type": "boolean",
+          "default": false,
+          "description": "whether to insert semicolon after import/require"
         }
       }
     },
     "commands": [
       {
-        "command": "bitk_node_require.require",
+        "command": "node_require.require",
         "title": "Node require/import"
       },
       {
-        "command": "bitk_node_require.requireAndInsert",
+        "command": "node_require.requireAndInsert",
         "title": "Node require/import and insert reference"
       }
     ],
     "keybindings": [
       {
-        "command": "bitk_node_require.require",
+        "command": "node_require.require",
         "key": "ctrl+shift+1"
       },
       {
-        "command": "bitk_node_require.requireAndInsert",
+        "command": "node_require.requireAndInsert",
         "key": "ctrl+shift+2"
       }
     ]
