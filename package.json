@@ -13,7 +13,7 @@
         "url": "https://github.com/tgreen7/vscode_extension_node_require" 
     },
     "license": "MIT",
-    "icon": "resources/images/logo",
+    "icon": "resources/images/logo.png",
     "galleryBanner": {
         "color": "#4073a5",
         "theme": "dark"
