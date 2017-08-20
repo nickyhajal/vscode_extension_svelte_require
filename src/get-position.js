@@ -27,7 +27,7 @@ function isNamedImportEnd(line) {
 module.exports = function(codeBlock, placeWithExternals) {
   let candidate = 0
   let findingNamedImportEnd = false
-  for (let i = 0; i < codeBlock.length; i += 1) {
+  for (let i = 0; i < codeBlock.length; i++) {
     const line = codeBlock[i]
     if (findingNamedImportEnd) {
       if (isNamedImportEnd(line)) findingNamedImportEnd = false
@@ -38,7 +38,7 @@ module.exports = function(codeBlock, placeWithExternals) {
     ) {
       if (isNamedImport(line) && !isNamedImportEnd(line))
         findingNamedImportEnd = true
-      candidate = i + 1
+      candidate = i
     } else if (!isCommentOrEmpty(line)) {
       break
     }
