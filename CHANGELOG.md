@@ -1,3 +1,13 @@
+# 1.0.5
+
+- ADDED: config option for semicolon.
+- FIXED: position when a block comment is at the top of a file.
+
+# 1.0.0
+
+- forked repository.
+- FIXED: position when a named import is present in the file.
+
 # 0.7.0
 
 - Absolute imports are inserted before relative imports (by **@nickyhajal**).
