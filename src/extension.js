@@ -126,7 +126,7 @@ function activate(context) {
                 relativePath = `./${relativePath}`
               }
 
-              relativePath = relativePath.replace(/\.jsx?/, '')
+              relativePath = relativePath.replace(/\.(j|t)sx?/, '')
             }
           } else {
             // A core module or dependency was selected
