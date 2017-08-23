@@ -12,7 +12,9 @@ function isCommentOrEmpty(line) {
 function isLocalRequire(line) {
   return (
     line.match(/require\([\s]?['|"][.|/]/) ||
-    line.match(/^import.*from\s['|"][.|/]/)
+    line.match(/^import.*from\s['|"][.|/]/) ||
+    // special case for statements like: import './style.css'
+    line.match(/^import.*\s['|"][.|/]/)
   )
 }
 
@@ -54,7 +56,7 @@ module.exports = function(codeBlock, placeWithExternals) {
     ) {
       if (isNamedImport(line) && !isNamedImportEnd(line))
         findingNamedImportEnd = true
-      candidate = i
+      candidate = i + 1
     } else if (!isCommentOrEmpty(line)) {
       break
     }
