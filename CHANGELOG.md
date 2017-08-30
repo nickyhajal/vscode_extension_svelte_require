@@ -1,3 +1,7 @@
+# 1.0.6
+
+- ADDED: ability to require multiple modules/files with a single command
+
 # 1.0.5
 
 - ADDED: config option for semicolon.

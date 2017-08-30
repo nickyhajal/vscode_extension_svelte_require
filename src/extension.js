@@ -1,22 +1,18 @@
-const vscode = require('vscode') // eslint-disable-line
+const vscode = require('vscode')
 const path = require('path')
-const os = require('os')
-const commonNames = require('./common-names')
+const Promise = require('bluebird')
 const getCoreModules = require('./get-core-modules')
 const getPackageDeps = require('./get-package-deps')
-const getPosition = require('./get-position')
-const caseName = require('./case-name')
-const detectFileRequireMethod = require('./detectFileRequireMethod')
-const constants = require('./constants')
-const _ = require('lodash')
-const isRequire = require('./is-require')
+const insertRequire = require('./insertRequire')
 
 function activate(context) {
   const config = vscode.workspace.getConfiguration('node_require') || {}
   const includePattern = `**/*.{${config.include.toString()}}`
   const excludePattern = `**/{${config.exclude.toString()}}`
 
-  const startPick = function({ insertAtCursor = false }) {
+  const startPick = function(
+    { insertAtCursor = false, multiple = false } = {}
+  ) {
     const promiseOfProjectFiles = vscode.workspace.findFiles(
       includePattern,
       excludePattern
@@ -67,135 +63,59 @@ function activate(context) {
         })
       })
 
-      vscode.window
-        .showQuickPick(items, {
-          placeHolder: 'Select dependency',
-          matchOnDescription: true,
-          matchOnDetail: true
+      const values = []
+      if (multiple) {
+        items.unshift({
+          label: 'Finalize Selections',
+          finish: true
         })
-        .then(value => {
-          if (!value) return
+      }
 
-          let relativePath
-          let importName
-          let isExternal
-
-          if (value.fsPath) {
-            // A local file was selected
-            isExternal = false
-            if (editor.document.fileName === value.fsPath) {
-              vscode.window.showErrorMessage(
-                'You are trying to require this file.'
-              )
-              return
-            }
-
-            const rootPathRelative = value.fsPath.slice(
-              vscode.workspace.rootPath.length
-            )
-            const isInModules = !!rootPathRelative.match(/^\/node_modules\//i)
-
-            if (isInModules) {
-              relativePath = rootPathRelative.slice(14)
-            } else {
-              const dirName = path.dirname(editor.document.fileName)
-              relativePath = path.relative(dirName, value.fsPath)
-              relativePath = relativePath.replace(/\\/g, '/')
-            }
-
-            if (relativePath === 'index.js') {
-              // We have selected index.js in the same directory as the source file
-              importName = path.basename(path.dirname(editor.document.fileName))
-              relativePath = `./${relativePath}`
-            } else {
-              // We have selected a file from another directory
-              if (path.basename(relativePath).toLowerCase() === 'index.js') {
-                relativePath = relativePath.slice(
-                  0,
-                  relativePath.length - '/index.js'.length
-                )
-              }
-
-              const baseName = caseName(
-                path.basename(relativePath).split('.')[0]
-              )
-              const aliasName = commonNames(baseName, config.aliases)
-              importName = aliasName || baseName
-
-              if (!isInModules && relativePath.indexOf('../') === -1) {
-                relativePath = `./${relativePath}`
-              }
-
-              relativePath = relativePath.replace(/\.(j|t)sx?/, '')
-            }
-          } else {
-            // A core module or dependency was selected
-            isExternal = true
-            relativePath = value.label
-            const commonName = commonNames(value.label, config.aliases)
-            importName = commonName || caseName(value.label)
-          }
-
-          const codeBlock = editor.document.getText().split(os.EOL)
-          const lineStart = getPosition(codeBlock, isExternal)
-          const cursorPosition = editor.selection.active
-
-          Promise.resolve(detectFileRequireMethod(codeBlock))
-            .then(requireMethod => {
-              if (requireMethod !== null) return requireMethod
-
-              return vscode.window
-                .showQuickPick(
-                  [
-                    { label: 'require', value: constants.TYPE_REQUIRE },
-                    { label: 'import', value: constants.TYPE_IMPORT }
-                  ],
-                  { placeHolder: 'Select import style' }
-                )
-                .then(style => style.value)
-            })
-            .then(requireMethod => {
-              let script
-
-              if (requireMethod === constants.TYPE_REQUIRE) {
-                script = `const ${importName} = require('${relativePath}')`
-              } else {
-                script = `import ${importName} from '${relativePath}'`
-              }
-
-              if (config.semi) {
-                script += ';'
-              }
-
-              return script
-            })
-            .then(script => {
-              editor.edit(editBuilder => {
-                const position = new vscode.Position(lineStart, 0)
-                const existingLine = codeBlock[lineStart]
-                const insertText =
-                  !_.isEmpty(existingLine) && !isRequire(existingLine)
-                    ? `${script}\n\n`
-                    : `${script}\n`
-                if (!codeBlock.some(line => line === script))
-                  editBuilder.insert(position, insertText)
-                if (insertAtCursor)
-                  editBuilder.insert(cursorPosition, importName)
-              })
-            })
+      const finalizeMultiple = () => {
+        Promise.mapSeries(values, value => {
+          return insertRequire(value, insertAtCursor, config)
         })
+      }
+
+      const showSelectionWindow = items => {
+        vscode.window
+          .showQuickPick(items, {
+            placeHolder: 'Select dependency',
+            matchOnDescription: true,
+            matchOnDetail: true
+          })
+          .then(value => {
+            if (!value) return
+            if (multiple) {
+              if (value.finish) return finalizeMultiple()
+              if (value) values.push(value)
+              items = items.filter(i => i.label !== value.label)
+              showSelectionWindow(items)
+            } else {
+              insertRequire(value, insertAtCursor, config)
+            }
+          })
+      }
+
+      showSelectionWindow(items)
     })
   }
 
   context.subscriptions.push(
     vscode.commands.registerCommand('node_require.require', () => {
-      startPick({ insertAtCursor: false })
+      startPick()
     })
   )
 
   context.subscriptions.push(
     vscode.commands.registerCommand('node_require.requireAndInsert', () => {
       startPick({ insertAtCursor: true })
+    })
+  )
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('node_require.requireMultiple', () => {
+      startPick({ multiple: true })
     })
   )
 }
