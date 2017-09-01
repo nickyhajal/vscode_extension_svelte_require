@@ -102,10 +102,13 @@ module.exports = function(value, insertAtCursor, config) {
       return editor.edit(editBuilder => {
         const position = new vscode.Position(lineStart, 0)
         const existingLine = codeBlock[lineStart]
-        const insertText =
-          !_.isEmpty(existingLine) && !isRequire(existingLine)
-            ? `${script}\n\n`
-            : `${script}\n`
+        // if no newline after previous require (eof)
+        // add a newline before script
+        const newLineBefore = existingLine === undefined ? '\n' : ''
+        // add an extra newline after if the next line is not a require statement
+        const newLineAfter =
+          !_.isEmpty(existingLine) && !isRequire(existingLine) ? '\n' : ''
+        const insertText = `${newLineBefore}${script}\n${newLineAfter}`
         if (!codeBlock.some(line => line === script))
           editBuilder.insert(position, insertText)
         if (insertAtCursor) editBuilder.insert(cursorPosition, importName)

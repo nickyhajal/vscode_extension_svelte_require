@@ -1,3 +1,7 @@
+# 1.1.3
+
+- FIXED: add a newline before if insert position is at end of file.
+
 # 1.1.2
 
 - ADDED: quote type config and quote type autodetection.
