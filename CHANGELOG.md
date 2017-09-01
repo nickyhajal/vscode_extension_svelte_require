@@ -1,6 +1,7 @@
 # 1.1.2
 
 - ADDED: quote type config and quote type autodetection.
+- ADDED: semicolon autodetection.
 
 # 1.1.0
 
