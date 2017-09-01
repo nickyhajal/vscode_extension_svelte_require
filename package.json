@@ -2,7 +2,7 @@
     "name": "vs-code-node-require",
     "displayName": "Node Require",
     "description": "Require files, dependencies and core modules",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "publisher": "tgreen7",
     "engines": {
         "vscode": "^1.0.0"
@@ -11,6 +11,9 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/tgreen7/vscode_extension_node_require"
+    },
+    "bugs": {
+        "url": "https://github.com/tgreen7/vscode_extension_node_require/issues"
     },
     "license": "MIT",
     "icon": "resources/images/logo.png",
@@ -126,6 +129,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "whether to insert semicolon after import/require"
+                },
+                "node_require.quoteType": {
+                    "type": "string",
+                    "default": "'",
+                    "description": "which quote type to use (single vs double) if autodetect fails."
                 }
             }
         },

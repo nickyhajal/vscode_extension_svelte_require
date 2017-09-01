@@ -19,7 +19,7 @@ function isLocalRequire(line) {
 }
 
 function isNamedImport(line) {
-  return line.match(line.match(/^import {/))
+  return line.match(/^import {/)
 }
 
 function isNamedImportEnd(line) {

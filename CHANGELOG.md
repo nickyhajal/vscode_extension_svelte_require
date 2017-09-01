@@ -1,6 +1,14 @@
-# 1.0.6
+# 1.1.2
 
-- ADDED: ability to require multiple modules/files with a single command
+- ADDED: quote type config and quote type autodetection.
+
+# 1.1.0
+
+- ADDED: ability to require multiple modules/files with a single command.
+
+# 1.8.0
+
+- ADDED: support for .ts/.tsx file types.
 
 # 1.0.5
 

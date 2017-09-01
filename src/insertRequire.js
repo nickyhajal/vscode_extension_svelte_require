@@ -8,6 +8,7 @@ const constants = require('./constants')
 const _ = require('lodash')
 const isRequire = require('./is-require')
 const commonNames = require('./common-names')
+const detectFileQuoteType = require('./detectFileQuoteType')
 
 module.exports = function(value, insertAtCursor, config) {
   const editor = vscode.window.activeTextEditor
@@ -86,11 +87,11 @@ module.exports = function(value, insertAtCursor, config) {
     })
     .then(requireMethod => {
       let script
-
+      const quoteType = detectFileQuoteType(codeBlock) || config.quoteType
       if (requireMethod === constants.TYPE_REQUIRE) {
-        script = `const ${importName} = require('${relativePath}')`
+        script = `const ${importName} = require(${quoteType}${relativePath}${quoteType})`
       } else {
-        script = `import ${importName} from '${relativePath}'`
+        script = `import ${importName} from ${quoteType}${relativePath}${quoteType}`
       }
 
       if (config.semi) {

@@ -18,7 +18,6 @@ function activate(context) {
       excludePattern
     )
     const items = []
-
     Promise.all([getPackageDeps(), promiseOfProjectFiles]).then(result => {
       const editor = vscode.window.activeTextEditor
       if (!editor) return
