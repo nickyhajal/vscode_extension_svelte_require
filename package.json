@@ -130,10 +130,10 @@
                     "default": false,
                     "description": "whether to insert semicolon after import/require if autodetect fails."
                 },
-                "node_require.quoteType": {
-                    "type": "string",
-                    "default": "'",
-                    "description": "which quote type to use (single vs double) if autodetect fails."
+                "node_require.singleQuote": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "prefer single quote if autodetect fails."
                 }
             }
         },

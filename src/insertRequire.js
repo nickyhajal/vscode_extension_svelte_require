@@ -33,11 +33,12 @@ module.exports = function(value, insertAtCursor, config) {
       importName = path.basename(path.dirname(editor.document.fileName))
       relativePath = `./${relativePath}`
     } else {
-      const fileName = path.basename(relativePath).toLowerCase()
       // We have selected a file from another directory
+      const fileName = path.basename(relativePath).toLowerCase()
+      // if it is an index file remove the /index.js portion
       if (fileName.match(/index\.(j|t)sx?/)) {
         const lengthToRemove =
-          '/index.js'.length - (fileName.match(/index\.(j|t)sx/) ? 1 : 0)
+          '/index.js'.length - (fileName.match(/\..*x/) ? 1 : 0)
 
         relativePath = relativePath.slice(
           0,
@@ -78,14 +79,14 @@ module.exports = function(value, insertAtCursor, config) {
         .then(style => style.value)
     })
     .then(requireMethod => {
-      let script
-      const quoteType = detectFileQuoteType(codeBlock) || config.quoteType
+      const quoteType =
+        detectFileQuoteType(codeBlock) || config.singleQuote ? "'" : '"'
       const semi = detectFileSemi(codeBlock) || config.semi ? ';' : ''
-      if (requireMethod === constants.TYPE_REQUIRE) {
-        script = `const ${importName} = require(${quoteType}${relativePath}${quoteType})${semi}`
-      } else {
-        script = `import ${importName} from ${quoteType}${relativePath}${quoteType}${semi}`
-      }
+      const pathWithQuotes = `${quoteType}${relativePath}${quoteType}`
+      const script =
+        requireMethod === constants.TYPE_REQUIRE
+          ? `const ${importName} = require(${pathWithQuotes})${semi}`
+          : `import ${importName} from ${pathWithQuotes}${semi}`
 
       return script
     })
