@@ -7,19 +7,18 @@ const getCoreModules = require('./getCoreModules')
 const getPackageDeps = require('./getPackageDeps')
 
 function activate(context) {
-  const config = vscode.workspace.getConfiguration('node_require') || {}
+  const config = vscode.workspace.getConfiguration('node_require')
 
   const startPick = function(
     { insertAtCursor = false, multiple = false } = {}
   ) {
-    const items = []
-    Promise.all([getPackageDeps(), getProjectFiles(config)]).then(result => {
+    Promise.join(
+      getPackageDeps(),
+      getProjectFiles(config)
+    ).then(([packageDepsArray, projectFiles]) => {
       const editor = vscode.window.activeTextEditor
       if (!editor) return
-
-      const packageDepsArray = result[0]
-      const projectFiles = result[1]
-
+      const items = []
       packageDepsArray.sort().forEach(dep => {
         items.push({
           label: dep,
@@ -35,6 +34,7 @@ function activate(context) {
           fsPath: null
         })
       })
+
       projectFiles.forEach(dep => {
         const rootRelative = dep.fsPath
           .replace(vscode.workspace.rootPath, '')
@@ -54,7 +54,6 @@ function activate(context) {
         })
       })
 
-      const values = []
       if (multiple) {
         items.unshift({
           label: 'Finalize Selections',
@@ -62,6 +61,7 @@ function activate(context) {
         })
       }
 
+      const values = []
       const finalizeMultiple = () => {
         Promise.mapSeries(values, value => {
           return insertRequire(value, insertAtCursor, config)
