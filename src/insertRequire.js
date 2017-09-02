@@ -1,15 +1,15 @@
 const vscode = require('vscode')
 const path = require('path')
 const os = require('os')
-const getPosition = require('./get-position')
-const caseName = require('./case-name')
+const _ = require('lodash')
 const detectFileRequireMethod = require('./detectFileRequireMethod')
 const constants = require('./constants')
-const _ = require('lodash')
-const isRequire = require('./is-require')
-const commonNames = require('./common-names')
 const detectFileQuoteType = require('./detectFileQuoteType')
 const detectFileSemi = require('./detectFileSemi')
+const commonNames = require('./commonNames')
+const caseName = require('./caseName')
+const getPosition = require('./getPosition')
+const isRequire = require('./isRequire')
 
 module.exports = function(value, insertAtCursor, config) {
   const editor = vscode.window.activeTextEditor
@@ -24,39 +24,30 @@ module.exports = function(value, insertAtCursor, config) {
       return
     }
 
-    const rootPathRelative = value.fsPath.slice(
-      vscode.workspace.rootPath.length
-    )
-    const isInModules = !!rootPathRelative.match(/^\/node_modules\//i)
+    const dirName = path.dirname(editor.document.fileName)
+    relativePath = path.relative(dirName, value.fsPath)
+    relativePath = relativePath.replace(/\\/g, '/')
 
-    if (isInModules) {
-      relativePath = rootPathRelative.slice(14)
-    } else {
-      const dirName = path.dirname(editor.document.fileName)
-      relativePath = path.relative(dirName, value.fsPath)
-      relativePath = relativePath.replace(/\\/g, '/')
-    }
-
-    if (relativePath === 'index.js') {
+    if (relativePath.match(/^index\.(j|t)sx?/)) {
       // We have selected index.js in the same directory as the source file
       importName = path.basename(path.dirname(editor.document.fileName))
       relativePath = `./${relativePath}`
     } else {
+      const fileName = path.basename(relativePath).toLowerCase()
       // We have selected a file from another directory
-      if (path.basename(relativePath).toLowerCase() === 'index.js') {
+      if (fileName.match(/index\.(j|t)sx?/)) {
+        const lengthToRemove =
+          '/index.js'.length - (fileName.match(/index\.(j|t)sx/) ? 1 : 0)
+
         relativePath = relativePath.slice(
           0,
-          relativePath.length - '/index.js'.length
+          relativePath.length - lengthToRemove
         )
       }
 
       const baseName = caseName(path.basename(relativePath).split('.')[0])
       const aliasName = commonNames(baseName, config.aliases)
       importName = aliasName || baseName
-
-      if (!isInModules && relativePath.indexOf('../') === -1) {
-        relativePath = `./${relativePath}`
-      }
 
       relativePath = relativePath.replace(/\.(j|t)sx?/, '')
     }

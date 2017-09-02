@@ -1,24 +1,19 @@
 const vscode = require('vscode')
 const path = require('path')
 const Promise = require('bluebird')
-const getCoreModules = require('./get-core-modules')
-const getPackageDeps = require('./get-package-deps')
 const insertRequire = require('./insertRequire')
+const getProjectFiles = require('./getProjectFiles')
+const getCoreModules = require('./getCoreModules')
+const getPackageDeps = require('./getPackageDeps')
 
 function activate(context) {
   const config = vscode.workspace.getConfiguration('node_require') || {}
-  const includePattern = `**/*.{${config.include.toString()}}`
-  const excludePattern = `**/{${config.exclude.toString()}}`
 
   const startPick = function(
     { insertAtCursor = false, multiple = false } = {}
   ) {
-    const promiseOfProjectFiles = vscode.workspace.findFiles(
-      includePattern,
-      excludePattern
-    )
     const items = []
-    Promise.all([getPackageDeps(), promiseOfProjectFiles]).then(result => {
+    Promise.all([getPackageDeps(), getProjectFiles(config)]).then(result => {
       const editor = vscode.window.activeTextEditor
       if (!editor) return
 
@@ -40,13 +35,12 @@ function activate(context) {
           fsPath: null
         })
       })
-
       projectFiles.forEach(dep => {
         const rootRelative = dep.fsPath
           .replace(vscode.workspace.rootPath, '')
           .replace(/\\/g, '/')
 
-        const label = path.basename(dep.path).match(/index\.jsx?/)
+        const label = path.basename(dep.path).match(/index\.(j|t)sx?/)
           ? `${path.basename(path.dirname(dep.path))}/${path.basename(
               dep.path
             )}`
@@ -54,10 +48,8 @@ function activate(context) {
 
         items.push({
           label,
-          detail: rootRelative.replace(/^\/node_modules\//, ''),
-          description: rootRelative.match(/^\/node_modules\//)
-            ? 'file inside module'
-            : 'project file',
+          detail: rootRelative,
+          description: 'project file',
           fsPath: dep.fsPath
         })
       })
@@ -87,7 +79,7 @@ function activate(context) {
             if (!value) return
             if (multiple) {
               if (value.finish) return finalizeMultiple()
-              if (value) values.push(value)
+              values.push(value)
               items = items.filter(i => i.label !== value.label)
               showSelectionWindow(items)
             } else {

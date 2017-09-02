@@ -1,4 +1,4 @@
-const isRequire = require('./is-require')
+const isRequire = require('./isRequire')
 
 module.exports = function(codeBlock) {
   for (let i = 0; i < codeBlock.length; i += 1) {

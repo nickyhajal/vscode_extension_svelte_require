@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const isRequire = require('./is-require')
+const isRequire = require('./isRequire')
 
 function isCommentOrEmpty(line) {
   return (
