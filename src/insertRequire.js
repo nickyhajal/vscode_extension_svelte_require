@@ -2,12 +2,12 @@ const vscode = require('vscode')
 const path = require('path')
 const os = require('os')
 const _ = require('lodash')
-const detectFileRequireMethod = require('./detectFileRequireMethod')
+const caseName = require('./caseName')
+const commonNames = require('./commonNames')
 const constants = require('./constants')
 const detectFileQuoteType = require('./detectFileQuoteType')
+const detectFileRequireMethod = require('./detectFileRequireMethod')
 const detectFileSemi = require('./detectFileSemi')
-const commonNames = require('./commonNames')
-const caseName = require('./caseName')
 const getPosition = require('./getPosition')
 const isRequire = require('./isRequire')
 
@@ -19,10 +19,6 @@ module.exports = function(value, insertAtCursor, config) {
   if (value.fsPath) {
     // A local file was selected
     isExternal = false
-    if (editor.document.fileName === value.fsPath) {
-      vscode.window.showErrorMessage('You are trying to require this file.')
-      return
-    }
 
     const dirName = path.dirname(editor.document.fileName)
     relativePath = path.relative(dirName, value.fsPath)
@@ -49,9 +45,11 @@ module.exports = function(value, insertAtCursor, config) {
       const baseName = caseName(path.basename(relativePath).split('.')[0])
       const aliasName = commonNames(baseName, config.aliases)
       importName = aliasName || baseName
-
-      relativePath = relativePath.replace(/\.(j|t)sx?/, '')
+      if (relativePath.indexOf('../') === -1) {
+        relativePath = `./${relativePath}`
+      }
     }
+    relativePath = relativePath.replace(/\.(j|t)sx?/, '')
   } else {
     // A core module or dependency was selected
     isExternal = true

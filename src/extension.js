@@ -15,7 +15,7 @@ function activate(context) {
     Promise.join(
       getPackageDeps(),
       getProjectFiles(config)
-    ).then(([packageDepsArray, projectFiles]) => {
+    ).then(([packageDepsArray = [], projectFiles = []]) => {
       const editor = vscode.window.activeTextEditor
       if (!editor) return
       const items = []
@@ -46,6 +46,8 @@ function activate(context) {
             )}`
           : path.basename(dep.path)
 
+        // don't allow requiring of the file being edited
+        if (editor.document.fileName === dep.fsPath) return
         items.push({
           label,
           detail: rootRelative,

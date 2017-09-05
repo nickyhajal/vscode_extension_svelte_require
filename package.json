@@ -2,7 +2,7 @@
     "name": "vs-code-node-require",
     "displayName": "Node Require",
     "description": "Require files, dependencies and core modules",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "publisher": "tgreen7",
     "engines": {
         "vscode": "^1.0.0"
@@ -23,7 +23,8 @@
     "activationEvents": [
         "onLanguage:javascript",
         "onCommand:node_require.require",
-        "onCommand:node_require.requireAndInsert"
+        "onCommand:node_require.requireAndInsert",
+        "onCommand:node_require.requireMultiple"
     ],
     "main": "./src/extension",
     "contributes": {
@@ -168,21 +169,21 @@
     },
     "devDependencies": {
         "babel-eslint": "^7.2.3",
-        "eslint": "^4.4.1",
+        "eslint": "^4.6.1",
         "eslint-config-react-app": "^2.0.0",
-        "eslint-config-teselagen": "^1.0.4",
-        "eslint-plugin-flowtype": "^2.35.0",
+        "eslint-config-teselagen": "^1.0.7",
+        "eslint-plugin-flowtype": "^2.35.1",
         "eslint-plugin-import": "^2.7.0",
         "eslint-plugin-jsx-a11y": "5.1.1",
-        "eslint-plugin-react": "^7.2.1",
+        "eslint-plugin-react": "^7.3.0",
         "husky": "^0.14.3",
-        "lint-staged": "^4.0.3",
-        "prettier": "^1.5.3",
-        "vscode": "^0.11.0"
+        "lint-staged": "^4.0.4",
+        "prettier": "^1.6.1",
+        "vscode": "^1.1.5"
     },
     "dependencies": {
         "bluebird": "^3.5.0",
-        "lodash": "^4.17.2"
+        "lodash": "^4.17.4"
     },
     "lint-staged": {
         "*.js": [
