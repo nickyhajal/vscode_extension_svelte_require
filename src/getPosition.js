@@ -34,6 +34,10 @@ function isEndOfBlockComment(line) {
   return line.match(/^\s*\*\//)
 }
 
+function isStyleRequire(line) {
+  return line.match(/^\s*import ['|"].*['|"]/)
+}
+
 module.exports = function(codeBlock, placeWithExternals) {
   let candidate = 0
   let findingNamedImportEnd = false
@@ -56,7 +60,8 @@ module.exports = function(codeBlock, placeWithExternals) {
     ) {
       if (isNamedImport(line) && !isNamedImportEnd(line))
         findingNamedImportEnd = true
-      candidate = i + 1
+      if (isStyleRequire(line)) candidate = i
+      else candidate = i + 1
     } else if (!isCommentOrEmpty(line)) {
       break
     }

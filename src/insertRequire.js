@@ -45,10 +45,12 @@ module.exports = function(value, insertAtCursor, config) {
       const baseName = caseName(path.basename(relativePath).split('.')[0])
       const aliasName = commonNames(baseName, config.aliases)
       importName = aliasName || baseName
+      // selected a path in the same directory as current file
       if (relativePath.indexOf('../') === -1) {
         relativePath = `./${relativePath}`
       }
     }
+    // get rid of file extension
     relativePath = relativePath.replace(/\.(j|t)sx?/, '')
   } else {
     // A core module or dependency was selected
