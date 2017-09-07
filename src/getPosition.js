@@ -1,42 +1,13 @@
-const _ = require('lodash')
 const isRequire = require('./isRequire')
-
-function isCommentOrEmpty(line) {
-  return (
-    _.isEmpty(line) ||
-    line.match(/^\s*\/\//) ||
-    line.match(/^\s*["']use strict["']/)
-  )
-}
-
-function isLocalRequire(line) {
-  return (
-    line.match(/require\([\s]?['|"][.|/]/) ||
-    line.match(/^import.*from\s['|"][.|/]/) ||
-    // special case for statements like: import './style.css'
-    line.match(/^import.*\s['|"][.|/]/)
-  )
-}
-
-function isNamedImport(line) {
-  return line.match(/^import {/)
-}
-
-function isNamedImportEnd(line) {
-  return line.match(/^.*from\s['|"]/)
-}
-
-function isStartOfBlockComment(line) {
-  return line.match(/^\s*\/\*/)
-}
-
-function isEndOfBlockComment(line) {
-  return line.match(/^\s*\*\//)
-}
-
-function isStyleRequire(line) {
-  return line.match(/^\s*import ['|"].*['|"]/)
-}
+const {
+  isNamedImport,
+  isEndOfBlockComment,
+  isStartOfBlockComment,
+  isNamedImportEnd,
+  isStyleRequire,
+  isLocalRequire,
+  isCommentOrEmpty
+} = require('./lineUtils')
 
 module.exports = function(codeBlock, placeWithExternals) {
   let candidate = 0
@@ -58,9 +29,10 @@ module.exports = function(codeBlock, placeWithExternals) {
       isRequire(line) &&
       (!placeWithExternals || (placeWithExternals && !isLocalRequire(line)))
     ) {
-      if (isNamedImport(line) && !isNamedImportEnd(line))
+      // require/imports should come before style imports
+      if (isStyleRequire(line)) break
+      else if (isNamedImport(line) && !isNamedImportEnd(line))
         findingNamedImportEnd = true
-      if (isStyleRequire(line)) candidate = i
       else candidate = i + 1
     } else if (!isCommentOrEmpty(line)) {
       break
