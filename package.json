@@ -2,7 +2,7 @@
   "name": "vs-code-bitkompagniet-require",
   "displayName": "Bitkompagniet Node Require",
   "description": "Require files, dependencies and core modules",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "publisher": "bitkompagniet",
   "engines": {
     "vscode": "^1.0.0"
@@ -36,6 +36,11 @@
             "tsx"
           ],
           "description": "include files to search for"
+        },
+        "bitk_node_require.use_semicolon": {
+          "type": "boolean",
+          "default": true,
+          "description": "Adds a semicolon at the end of the require statement"
         },
         "bitk_node_require.exclude": {
           "type": "array",
