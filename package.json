@@ -38,7 +38,9 @@
                         "js",
                         "ts",
                         "jsx",
-                        "tsx"
+                        "tsx",
+                        "css",
+                        "json"
                     ],
                     "description": "include files to search for"
                 },
