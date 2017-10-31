@@ -5,12 +5,13 @@ const insertRequire = require('./insertRequire')
 const getProjectFiles = require('./getProjectFiles')
 const getCoreModules = require('./getCoreModules')
 const getPackageDeps = require('./getPackageDeps')
+const showModulePropNames = require('./showModulePropNames')
 
 function activate(context) {
   const config = vscode.workspace.getConfiguration('node_require')
 
   const startPick = function(
-    { insertAtCursor = false, multiple = false } = {}
+    { insertAtCursor = false, multiple = false, destructuring = false } = {}
   ) {
     Promise.join(
       getPackageDeps(),
@@ -21,9 +22,10 @@ function activate(context) {
       const items = []
       packageDepsArray.sort().forEach(dep => {
         items.push({
-          label: dep,
+          label: dep.label,
           description: 'module',
-          fsPath: null
+          fsPath: null,
+          dirPath: dep.dirPath
         })
       })
 
@@ -84,6 +86,8 @@ function activate(context) {
               values.push(value)
               items = items.filter(i => i.label !== value.label)
               showSelectionWindow(items)
+            } else if (destructuring) {
+              showModulePropNames(value, insertAtCursor, config)
             } else {
               insertRequire(value, insertAtCursor, config)
             }
@@ -109,6 +113,12 @@ function activate(context) {
   context.subscriptions.push(
     vscode.commands.registerCommand('node_require.requireMultiple', () => {
       startPick({ multiple: true })
+    })
+  )
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('node_require.destructuringImport', () => {
+      startPick({ destructuring: true })
     })
   )
 }

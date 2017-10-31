@@ -60,6 +60,10 @@ module.exports = function(value, insertAtCursor, config) {
     importName = commonName || caseName(value.label)
   }
 
+  if (value.exportVars) {
+    importName = `{ ${value.exportVars.join(', ')} }`
+  }
+
   const codeBlock = editor.document.getText().split(os.EOL)
   const lineStart = getPosition(codeBlock, isExternal)
   const cursorPosition = editor.selection.active
