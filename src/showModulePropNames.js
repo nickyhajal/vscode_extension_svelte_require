@@ -58,7 +58,7 @@ function getModuleExportNames({ fsPath, label, description, dirPath }) {
   try {
     const obj = require(modulePath)
 
-    if (typeof obj === 'function') {
+    if (typeof obj === 'function' || (obj.__esModule && obj.default)) {
       vscode.window.showInformationMessage('Module is function')
       return
     }
@@ -81,29 +81,37 @@ module.exports = function(value, insertAtCursor, config) {
   }
 
   const exportVars = getModuleExportNames(value)
+  let selectedVars = []
+
+  const insert = () => {
+    value.exportVars = selectedVars
+    insertRequire(value, insertAtCursor, config)
+  }
+
   if (!exportVars) return
+  if (exportVars.length === 1) {
+    selectedVars = exportVars
+    return insert()
+  }
 
   exportVars.unshift({
     label: '------ Select One or More Options ------',
     finish: true
   })
 
-  const selectedVars = []
-
   const showModuleProps = () => {
     if (selectedVars.length === 1) {
       exportVars[0].label = '------ Finish Selecting ------'
     }
 
-    const remainingFunctionNames = _.difference(exportVars, selectedVars)
-    value.exportVars = selectedVars
+    const remainingVars = _.difference(exportVars, selectedVars)
 
     if (exportVars.length - 1 === selectedVars.length) {
-      return insertRequire(value, insertAtCursor, config)
+      return insert()
     }
 
     vscode.window
-      .showQuickPick(remainingFunctionNames, {
+      .showQuickPick(remainingVars, {
         placeHolder: 'Select props'
       })
       .then(exportVarName => {
@@ -111,7 +119,7 @@ module.exports = function(value, insertAtCursor, config) {
 
         if (exportVarName.finish) {
           if (!selectedVars.length) return
-          return insertRequire(value, insertAtCursor, config)
+          return insert()
         }
 
         selectedVars.push(exportVarName)
