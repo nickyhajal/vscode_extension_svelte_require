@@ -60,7 +60,7 @@ function activate(context) {
 
       if (multiple) {
         items.unshift({
-          label: 'Finalize Selections',
+          label: '------ Finish Selecting ------',
           finish: true
         })
       }
