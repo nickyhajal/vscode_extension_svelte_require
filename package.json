@@ -24,7 +24,8 @@
         "onLanguage:javascript",
         "onCommand:node_require.require",
         "onCommand:node_require.requireAndInsert",
-        "onCommand:node_require.requireMultiple"
+        "onCommand:node_require.requireMultiple",
+        "onCommand:node_require.destructuringImport"
     ],
     "main": "./src/extension",
     "contributes": {
@@ -152,6 +153,10 @@
             {
                 "command": "node_require.requireAndInsert",
                 "title": "Node require/import and insert reference"
+            },
+            {
+                "command": "node_require.destructuringImport",
+                "title": "Node destructuring require/import"
             }
         ],
         "keybindings": [
@@ -162,6 +167,10 @@
             {
                 "command": "node_require.requireAndInsert",
                 "key": "ctrl+shift+2"
+            },
+            {
+                "command": "node_require.destructuringImport",
+                "key": "ctrl+shift+3"
             }
         ]
     },
