@@ -25,6 +25,8 @@ module.exports = function(codeBlock, placeWithExternals) {
     } else if (isStartOfBlockComment(line) && !isEndOfBlockComment(line)) {
       findingBlockCommentEnd = true
       candidate = i + 1
+    } else if (isStartOfBlockComment(line) && isEndOfBlockComment(line)) {
+      candidate = i + 1
     } else if (
       isRequire(line) &&
       (!placeWithExternals || (placeWithExternals && !isLocalRequire(line)))

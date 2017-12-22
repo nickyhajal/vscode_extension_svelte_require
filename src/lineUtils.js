@@ -26,7 +26,7 @@ module.exports = {
     return line.match(/^\s*\/\*/)
   },
   isEndOfBlockComment: function(line) {
-    return line.match(/^\s*\*\//)
+    return line.match(/^.*\*\//)
   },
   isStyleRequire: function(line) {
     return line.match(/^\s*import ['|"].*['|"]/)

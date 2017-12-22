@@ -1,6 +1,7 @@
 const vscode = require('vscode')
 const path = require('path')
 const Promise = require('bluebird')
+const _ = require('lodash')
 const insertRequire = require('./insertRequire')
 const getProjectFiles = require('./getProjectFiles')
 const getCoreModules = require('./getCoreModules')
@@ -84,7 +85,7 @@ function activate(context) {
             if (multiple) {
               if (value.finish) return finalizeMultiple()
               values.push(value)
-              items = items.filter(i => i.label !== value.label)
+              items = _.difference(items, values)
               showSelectionWindow(items)
             } else if (destructuring) {
               showModulePropNames(value, insertAtCursor, config)
