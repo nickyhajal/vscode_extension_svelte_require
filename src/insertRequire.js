@@ -51,7 +51,7 @@ module.exports = function(value, insertAtCursor, config) {
       }
     }
     // get rid of file extension
-    relativePath = relativePath.replace(/\.(j|t)sx?/, '')
+    relativePath = relativePath.replace(/\.(j|t)sx?$/, '')
   } else {
     // A core module or dependency was selected
     isExternal = true
