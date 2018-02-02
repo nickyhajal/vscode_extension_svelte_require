@@ -1,3 +1,12 @@
+# 1.2.4
+
+- ADDED: destructuring import now goes deeper. Will get named exports from files exported
+  from selected file.
+
+# 1.2.0
+
+- ADDED: destructuring import command to require named exports from files.
+
 # 1.1.3
 
 - FIXED: add a newline before if insert position is at end of file.

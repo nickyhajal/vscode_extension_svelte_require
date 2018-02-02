@@ -4,6 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const insertRequire = require('./insertRequire')
 const EXPORT_REGEX = /export\s*(?:function|class|const|let|var)?\s*(?!default)(\w+|\{[^{]+\})/g
+const NEXT_LEVEL_EXPORT_REGEX = /export +\* +from\s*["'](.*)["']/g
 
 function getPackageField(moduleDirPath, field) {
   const pathToPackageJson = path.join(moduleDirPath, 'package.json')
@@ -25,21 +26,33 @@ function getPackageField(moduleDirPath, field) {
   }
 }
 
-function getMatchExportNames(fileString) {
-  const resultNames = []
+function getMatchExportNames(fileString, modulePath) {
+  let resultNames = []
   fileString.replace(EXPORT_REGEX, (_, group) => {
     let exportObj
-
     if (group.startsWith('{')) {
       exportObj = group.replace(/[\s\n\t{}]/g, '').split(',')
 
-      return exportObj.forEach(i => resultNames.push(i))
+      return exportObj.forEach(i =>
+        resultNames.push(i.replace('defaultas', ''))
+      )
     }
 
     resultNames.push(group)
   })
+  resultNames = _.remove(resultNames, n => !n.startsWith('_'))
 
-  return _.remove(resultNames, n => !n.startsWith('_'))
+  fileString.replace(NEXT_LEVEL_EXPORT_REGEX, (_, group) => {
+    // get full path
+    let filePath = path.join(path.dirname(modulePath), group)
+    // add an extension to the file path
+    if (!path.extname(filePath)) {
+      filePath = filePath + path.extname(modulePath)
+    }
+    resultNames = resultNames.concat(getModuleExportNames({ fsPath: filePath }))
+  })
+
+  return resultNames
 }
 
 function getModuleExportNames({ fsPath, label, description, dirPath }) {
@@ -57,7 +70,6 @@ function getModuleExportNames({ fsPath, label, description, dirPath }) {
 
   try {
     const obj = require(modulePath)
-
     if (typeof obj === 'function' || (obj.__esModule && obj.default)) {
       vscode.window.showInformationMessage('Module is function')
       return
@@ -69,7 +81,7 @@ function getModuleExportNames({ fsPath, label, description, dirPath }) {
   }
 
   const fileStr = fs.readFileSync(modulePath, 'utf-8')
-  return getMatchExportNames(fileStr)
+  return getMatchExportNames(fileStr, modulePath)
 }
 
 module.exports = function(value, insertAtCursor, config) {
