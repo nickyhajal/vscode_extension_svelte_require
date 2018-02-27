@@ -11,7 +11,7 @@ const detectFileSemi = require('./detectFileSemi')
 const getPosition = require('./getPosition')
 const isRequire = require('./isRequire')
 
-module.exports = function(value, insertAtCursor, config) {
+module.exports = async function(value, insertAtCursor, config) {
   const editor = vscode.window.activeTextEditor
   let relativePath
   let importName
@@ -59,55 +59,57 @@ module.exports = function(value, insertAtCursor, config) {
     const commonName = commonNames(value.label, config.aliases)
     importName = commonName || caseName(value.label)
   }
-
-  if (value.exportVars) {
-    importName = `{ ${value.exportVars.join(', ')} }`
-  }
-
-  const codeBlock = editor.document.getText().split(os.EOL)
+  const fileString = editor.document.getText()
+  const codeBlock = fileString.split(os.EOL)
   const lineStart = getPosition(codeBlock, isExternal)
   const cursorPosition = editor.selection.active
+  let requireMethod = detectFileRequireMethod(codeBlock)
+  if (!requireMethod) {
+    const style = await vscode.window.showQuickPick(
+      [
+        { label: 'require', value: constants.TYPE_REQUIRE },
+        { label: 'import', value: constants.TYPE_IMPORT }
+      ],
+      { placeHolder: 'Select import style' }
+    )
+    requireMethod = style.value
+  }
+  const quoteType =
+    detectFileQuoteType(codeBlock) || (config.singleQuote ? "'" : '"')
+  const semi = detectFileSemi(codeBlock) || (config.semi ? ';' : '')
+  const pathWithQuotes = `${quoteType}${relativePath}${quoteType}`
 
-  return Promise.resolve(detectFileRequireMethod(codeBlock))
-    .then(requireMethod => {
-      if (requireMethod !== null) return requireMethod
+  if (value.exportVars) {
+    const exportVarsToUse = []
+    const fileStringNoNewlines = fileString.replace(/(\r\n|\n|\r)/gm, ' ')
+    // remove exports that have already been imported
+    value.exportVars.forEach(exportVar => {
+      const alreadyImportedRegex = new RegExp(`${exportVar}.*${relativePath}`)
+      if (!fileStringNoNewlines.match(alreadyImportedRegex)) {
+        exportVarsToUse.push(exportVar)
+      }
+    })
+    if (!exportVarsToUse.length) return
+    importName = `{ ${exportVarsToUse.join(', ')} }`
+  }
 
-      return vscode.window
-        .showQuickPick(
-          [
-            { label: 'require', value: constants.TYPE_REQUIRE },
-            { label: 'import', value: constants.TYPE_IMPORT }
-          ],
-          { placeHolder: 'Select import style' }
-        )
-        .then(style => style.value)
-    })
-    .then(requireMethod => {
-      const quoteType =
-        detectFileQuoteType(codeBlock) || config.singleQuote ? "'" : '"'
-      const semi = detectFileSemi(codeBlock) || config.semi ? ';' : ''
-      const pathWithQuotes = `${quoteType}${relativePath}${quoteType}`
-      const script =
-        requireMethod === constants.TYPE_REQUIRE
-          ? `const ${importName} = require(${pathWithQuotes})${semi}`
-          : `import ${importName} from ${pathWithQuotes}${semi}`
+  const script =
+    requireMethod === constants.TYPE_REQUIRE
+      ? `const ${importName} = require(${pathWithQuotes})${semi}`
+      : `import ${importName} from ${pathWithQuotes}${semi}`
 
-      return script
-    })
-    .then(script => {
-      return editor.edit(editBuilder => {
-        const position = new vscode.Position(lineStart, 0)
-        const existingLine = codeBlock[lineStart]
-        // if no newline after previous require (eof)
-        // add a newline before script
-        const newLineBefore = existingLine === undefined ? '\n' : ''
-        // add an extra newline after if the next line is not a require statement
-        const newLineAfter =
-          !_.isEmpty(existingLine) && !isRequire(existingLine) ? '\n' : ''
-        const insertText = `${newLineBefore}${script}\n${newLineAfter}`
-        if (!codeBlock.some(line => line === script))
-          editBuilder.insert(position, insertText)
-        if (insertAtCursor) editBuilder.insert(cursorPosition, importName)
-      })
-    })
+  return editor.edit(editBuilder => {
+    const position = new vscode.Position(lineStart, 0)
+    const existingLine = codeBlock[lineStart]
+    // if no newline after previous require (eof)
+    // add a newline before script
+    const newLineBefore = existingLine === undefined ? '\n' : ''
+    // add an extra newline after if the next line is not a require statement
+    const newLineAfter =
+      !_.isEmpty(existingLine) && !isRequire(existingLine) ? '\n' : ''
+    const insertText = `${newLineBefore}${script}\n${newLineAfter}`
+    if (!codeBlock.some(line => line === script))
+      editBuilder.insert(position, insertText)
+    if (insertAtCursor) editBuilder.insert(cursorPosition, importName)
+  })
 }

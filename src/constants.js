@@ -1,5 +1,5 @@
-const TYPE_IMPORT = 0
-const TYPE_REQUIRE = 1
+const TYPE_IMPORT = 'import'
+const TYPE_REQUIRE = 'require'
 
 module.exports = {
   TYPE_IMPORT,

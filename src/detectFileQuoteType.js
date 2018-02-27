@@ -7,5 +7,5 @@ module.exports = function(codeBlock) {
     if (isRequire(line) && line.match(/"/)) return '"'
   }
 
-  return null
+  return false
 }
