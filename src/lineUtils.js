@@ -30,5 +30,8 @@ module.exports = {
   },
   isStyleRequire: function(line) {
     return line.match(/^\s*import ['|"].*['|"]/)
+  },
+  isShebang: function(line) {
+    return line.match(/^\s*#!/)
   }
 }
