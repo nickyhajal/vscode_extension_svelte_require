@@ -6,7 +6,8 @@ const {
   isNamedImportEnd,
   isStyleRequire,
   isLocalRequire,
-  isCommentOrEmpty
+  isCommentOrEmpty,
+  isShebang
 } = require('./lineUtils')
 
 module.exports = function(codeBlock, placeWithExternals) {
@@ -29,6 +30,8 @@ module.exports = function(codeBlock, placeWithExternals) {
       findingBlockCommentEnd = true
       candidate = i + 1
     } else if (isStartOfBlockComment(line) && isEndOfBlockComment(line)) {
+      candidate = i + 1
+    } else if (isShebang(line)) {
       candidate = i + 1
     } else if (
       isRequire(line) &&
