@@ -17,7 +17,7 @@ module.exports = {
     )
   },
   isNamedImport: function(line) {
-    return line.match(/^import {/)
+    return line.match(/^import.*{/)
   },
   isNamedImportEnd: function(line) {
     return line.match(/^.*from\s['|"]/)

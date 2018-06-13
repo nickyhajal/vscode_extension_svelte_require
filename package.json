@@ -180,21 +180,21 @@
     },
     "devDependencies": {
         "babel-eslint": "^7.2.3",
-        "eslint": "^4.1.1",
+        "eslint": "^4.19.1",
         "eslint-config-react-app": "^2.1.0",
         "eslint-config-teselagen": "^4.0.12",
-        "eslint-plugin-flowtype": "^2.34.1",
-        "eslint-plugin-import": "^2.6.0",
+        "eslint-plugin-flowtype": "^2.49.3",
+        "eslint-plugin-import": "^2.12.0",
         "eslint-plugin-jsx-a11y": "^5.1.1",
-        "eslint-plugin-react": "^7.1.0",
+        "eslint-plugin-react": "^7.9.1",
         "husky": "^0.14.3",
-        "lint-staged": "^7.0.0",
-        "prettier": "^1.10.2",
-        "vscode": "^1.1.10"
+        "lint-staged": "^7.2.0",
+        "prettier": "^1.13.5",
+        "vscode": "^1.1.18"
     },
     "dependencies": {
-        "bluebird": "^3.5.0",
-        "lodash": "^4.17.4"
+        "bluebird": "^3.5.1",
+        "lodash": "^4.17.10"
     },
     "lint-staged": {
         "*.js": [
