@@ -4,6 +4,10 @@ Use the command dialog or the shortcut `Ctrl+Shift+1`. You can also use `Ctrl+Sh
 
 ![Require Example](/resources/images/nodeRequire.gif)
 
+For destructuring import use `ctrl+shift+3`. First select module, then select one or more export properties.
+
+![Destructuring Example](https://user-images.githubusercontent.com/15873274/32335474-05351a86-bffe-11e7-932e-0708eae20deb.gif)
+
 ## Features
 
 * Require core modules, dependencies / devDependencies or local files.
