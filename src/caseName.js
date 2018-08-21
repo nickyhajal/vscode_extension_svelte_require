@@ -11,7 +11,9 @@ module.exports = function(originalName, preserveAcronymCase) {
     }
 
     return caseName
+  } else {
+    const camel = _.camelCase(originalName)
+    const fixedCase = originalName.slice(0, 1) + camel.slice(1)
+    return fixedCase
   }
-
-  return originalName.slice(0, 1) + _.camelCase(originalName).slice(1)
 }
