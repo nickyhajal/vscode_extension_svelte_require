@@ -138,6 +138,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "prefer single quote if autodetect fails."
+                },
+                "node_require.preserveAcronymCase": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "convert filename to camelCase but preserves acronyms like `devSQLConfig` or `XMLImporter`."
                 }
             }
         },
