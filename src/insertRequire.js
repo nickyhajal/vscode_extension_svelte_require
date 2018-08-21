@@ -12,6 +12,7 @@ const getPosition = require('./getPosition')
 const isRequire = require('./isRequire')
 
 module.exports = async function(value, insertAtCursor, config) {
+  const convertCase = filename => caseName(filename, config.preserveAcronymCase)
   const editor = vscode.window.activeTextEditor
   let relativePath
   let importName
@@ -42,7 +43,7 @@ module.exports = async function(value, insertAtCursor, config) {
         )
       }
 
-      const baseName = caseName(path.basename(relativePath).split('.')[0])
+      const baseName = convertCase(path.basename(relativePath).split('.')[0])
       const aliasName = commonNames(baseName, config.aliases)
       importName = aliasName || baseName
       // selected a path in the same directory as current file
@@ -57,7 +58,7 @@ module.exports = async function(value, insertAtCursor, config) {
     isExternal = true
     relativePath = value.label
     const commonName = commonNames(value.label, config.aliases)
-    importName = commonName || caseName(value.label)
+    importName = commonName || convertCase(value.label)
   }
   const fileString = editor.document.getText()
   const codeBlock = fileString.split(os.EOL)
