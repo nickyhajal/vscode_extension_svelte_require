@@ -1,211 +1,216 @@
 {
-    "name": "vs-code-node-require",
-    "displayName": "Node Require",
-    "description": "Require files, dependencies and core modules",
-    "version": "1.2.8",
-    "publisher": "tgreen7",
-    "engines": {
-        "vscode": "^1.0.0"
-    },
-    "homepage": "https://github.com/tgreen7/vscode_extension_node_require",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/tgreen7/vscode_extension_node_require"
-    },
-    "bugs": {
-        "url": "https://github.com/tgreen7/vscode_extension_node_require/issues"
-    },
-    "license": "MIT",
-    "icon": "resources/images/logo.png",
-    "categories": [
-        "Other"
-    ],
-    "activationEvents": [
-        "onLanguage:javascript",
-        "onCommand:node_require.require",
-        "onCommand:node_require.requireAndInsert",
-        "onCommand:node_require.requireMultiple",
-        "onCommand:node_require.destructuringImport"
-    ],
-    "main": "./src/extension",
-    "contributes": {
-        "configuration": {
-            "type": "object",
-            "title": "Node Require",
-            "properties": {
-                "node_require.include": {
-                    "type": "array",
-                    "default": [
-                        "js",
-                        "ts",
-                        "jsx",
-                        "tsx",
-                        "css",
-                        "json"
-                    ],
-                    "description": "include files to search for"
-                },
-                "node_require.exclude": {
-                    "type": "array",
-                    "default": [
-                        "node_modules",
-                        "typings",
-                        "dist",
-                        "bin",
-                        "build",
-                        "tmp"
-                    ],
-                    "description": "defines files and folders to exclude"
-                },
-                "node_require.aliases": {
-                    "type": "object",
-                    "description": "A mapping from module name to a different alias (the variable name it is assigned to)",
-                    "default": {
-                        "backbone": "Backbone",
-                        "backbone.marionette": "Marionette",
-                        "bluebird": "Promise",
-                        "cheerio": "$",
-                        "ember": "Ember",
-                        "handlebars": "Handlebars",
-                        "highland": "hl",
-                        "hogan.js": "Hogan",
-                        "leaflet": "L",
-                        "lodash": "_",
-                        "string": "S",
-                        "jquery": "$",
-                        "jquery-ui": "ui",
-                        "knockout": "ko",
-                        "mustache": "Mustache",
-                        "node-tap": "test",
-                        "openlayers": "ol",
-                        "pouchdb": "PouchDB",
-                        "prova": "test",
-                        "es6-promise": "Promise",
-                        "raven-js": "Raven",
-                        "native-promise-only": "Promise",
-                        "node-uuid": "uuid",
-                        "ractive": "Ractive",
-                        "immutable": "Immutable",
-                        "ramda": "R",
-                        "react": "React",
-                        "react-dom": "ReactDOM",
-                        "react-addons-clone-with-props": "cloneWithProps",
-                        "react-addons-create-fragment": "createFragment",
-                        "react-addons-css-transition-group": "CSSTransitionGroup",
-                        "react-addons-linked-state-mixin": "LinkedStateMixin",
-                        "react-addons-pure-render-mixin": "PureRenderMixin",
-                        "react-addons-shallow-compare": "shallowCompare",
-                        "react-addons-transition-group": "TransitionGroup",
-                        "react-addons-update": "update",
-                        "roslib": "ROS",
-                        "rsvp": "RSVP",
-                        "underscore": "_",
-                        "socket.io": "io",
-                        "superagent": "request",
-                        "spine": "Spine",
-                        "tap": "test",
-                        "three": "THREE",
-                        "q": "Q",
-                        "qunit": "QUnit",
-                        "zepto": "$",
-                        "graceful-fs": "fs",
-                        "findup-sync": "findup",
-                        "mime-types": "mime",
-                        "gulp-util": "gutil",
-                        "iconv-lite": "iconv",
-                        "event-stream": "es",
-                        "stream-line-wrapper": "LineWrapper",
-                        "stream-to-array": "streamToArray",
-                        "raw-body": "getRawBody",
-                        "aws-sdk": "AWS",
-                        "connect-dynamodb": "DynamoDBStore",
-                        "connect-mysql": "MySQLStore",
-                        "connect-sdb": "SdbStore",
-                        "connect-sqlite3": "SQLiteStore",
-                        "package.json": "pkg",
-                        "tape": "test",
-                        "sequelize": "Sequelize",
-                        "r": "rethinkdb",
-                        "underscore.string": "s"
-                    }
-                },
-                "node_require.semi": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "whether to insert semicolon after import/require if autodetect fails."
-                },
-                "node_require.singleQuote": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "prefer single quote if autodetect fails."
-                },
-                "node_require.preserveAcronymCase": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "convert filename to camelCase but preserves acronyms like `devSQLConfig` or `XMLImporter`."
-                }
-            }
+  "name": "vs-code-node-require",
+  "displayName": "Node Require",
+  "description": "Require files, dependencies and core modules",
+  "version": "1.2.8",
+  "publisher": "tgreen7",
+  "engines": {
+    "vscode": "^1.0.0"
+  },
+  "homepage": "https://github.com/tgreen7/vscode_extension_node_require",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tgreen7/vscode_extension_node_require"
+  },
+  "bugs": {
+    "url": "https://github.com/tgreen7/vscode_extension_node_require/issues"
+  },
+  "license": "MIT",
+  "icon": "resources/images/logo.png",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onCommand:node_require.require",
+    "onCommand:node_require.requireAndInsert",
+    "onCommand:node_require.requireMultiple",
+    "onCommand:node_require.destructuringImport"
+  ],
+  "main": "./src/extension",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Node Require",
+      "properties": {
+        "node_require.include": {
+          "type": "array",
+          "default": [
+            "js",
+            "ts",
+            "jsx",
+            "tsx",
+            "css",
+            "json"
+          ],
+          "description": "include files to search for"
         },
-        "commands": [
-            {
-                "command": "node_require.require",
-                "title": "Node require/import"
-            },
-            {
-                "command": "node_require.requireMultiple",
-                "title": "Node require/import multiple"
-            },
-            {
-                "command": "node_require.requireAndInsert",
-                "title": "Node require/import and insert reference"
-            },
-            {
-                "command": "node_require.destructuringImport",
-                "title": "Node destructuring require/import"
-            }
-        ],
-        "keybindings": [
-            {
-                "command": "node_require.require",
-                "key": "ctrl+shift+1"
-            },
-            {
-                "command": "node_require.requireAndInsert",
-                "key": "ctrl+shift+2"
-            },
-            {
-                "command": "node_require.destructuringImport",
-                "key": "ctrl+shift+3"
-            }
-        ]
+        "node_require.exclude": {
+          "type": "array",
+          "default": [
+            "node_modules",
+            "typings",
+            "dist",
+            "bin",
+            "build",
+            "tmp"
+          ],
+          "description": "defines files and folders to exclude"
+        },
+        "node_require.aliases": {
+          "type": "object",
+          "description": "A mapping from module name to a different alias (the variable name it is assigned to)",
+          "default": {
+            "backbone": "Backbone",
+            "backbone.marionette": "Marionette",
+            "bluebird": "Promise",
+            "cheerio": "$",
+            "ember": "Ember",
+            "handlebars": "Handlebars",
+            "highland": "hl",
+            "hogan.js": "Hogan",
+            "leaflet": "L",
+            "lodash": "_",
+            "string": "S",
+            "jquery": "$",
+            "jquery-ui": "ui",
+            "knockout": "ko",
+            "mustache": "Mustache",
+            "node-tap": "test",
+            "openlayers": "ol",
+            "pouchdb": "PouchDB",
+            "prova": "test",
+            "es6-promise": "Promise",
+            "raven-js": "Raven",
+            "native-promise-only": "Promise",
+            "node-uuid": "uuid",
+            "ractive": "Ractive",
+            "immutable": "Immutable",
+            "ramda": "R",
+            "react": "React",
+            "react-dom": "ReactDOM",
+            "react-addons-clone-with-props": "cloneWithProps",
+            "react-addons-create-fragment": "createFragment",
+            "react-addons-css-transition-group": "CSSTransitionGroup",
+            "react-addons-linked-state-mixin": "LinkedStateMixin",
+            "react-addons-pure-render-mixin": "PureRenderMixin",
+            "react-addons-shallow-compare": "shallowCompare",
+            "react-addons-transition-group": "TransitionGroup",
+            "react-addons-update": "update",
+            "roslib": "ROS",
+            "rsvp": "RSVP",
+            "underscore": "_",
+            "socket.io": "io",
+            "superagent": "request",
+            "spine": "Spine",
+            "tap": "test",
+            "three": "THREE",
+            "q": "Q",
+            "qunit": "QUnit",
+            "zepto": "$",
+            "graceful-fs": "fs",
+            "findup-sync": "findup",
+            "mime-types": "mime",
+            "gulp-util": "gutil",
+            "iconv-lite": "iconv",
+            "event-stream": "es",
+            "stream-line-wrapper": "LineWrapper",
+            "stream-to-array": "streamToArray",
+            "raw-body": "getRawBody",
+            "aws-sdk": "AWS",
+            "connect-dynamodb": "DynamoDBStore",
+            "connect-mysql": "MySQLStore",
+            "connect-sdb": "SdbStore",
+            "connect-sqlite3": "SQLiteStore",
+            "package.json": "pkg",
+            "tape": "test",
+            "sequelize": "Sequelize",
+            "r": "rethinkdb",
+            "underscore.string": "s"
+          }
+        },
+        "node_require.semi": {
+          "type": "boolean",
+          "default": false,
+          "description": "whether to insert semicolon after import/require if autodetect fails."
+        },
+        "node_require.singleQuote": {
+          "type": "boolean",
+          "default": true,
+          "description": "prefer single quote if autodetect fails."
+        },
+        "node_require.preserveAcronymCase": {
+          "type": "boolean",
+          "default": false,
+          "description": "convert filename to camelCase but preserves acronyms like `devSQLConfig` or `XMLImporter`."
+        },
+        "node_require.insertAtCursor": {
+          "type": "boolean",
+          "default": false,
+          "description": "places import statements at cursor instead of at the bottom of the import block"
+        }
+      }
     },
-    "scripts": {
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "precommit": "lint-staged"
-    },
-    "devDependencies": {
-        "babel-eslint": "^7.2.3",
-        "eslint": "^4.19.1",
-        "eslint-config-react-app": "^2.1.0",
-        "eslint-config-teselagen": "^4.0.12",
-        "eslint-plugin-flowtype": "^2.49.3",
-        "eslint-plugin-import": "^2.12.0",
-        "eslint-plugin-jsx-a11y": "^5.1.1",
-        "eslint-plugin-react": "^7.9.1",
-        "husky": "^0.14.3",
-        "lint-staged": "^7.2.0",
-        "prettier": "^1.13.5",
-        "vscode": "^1.1.18"
-    },
-    "dependencies": {
-        "bluebird": "^3.5.1",
-        "lodash": "^4.17.10"
-    },
-    "lint-staged": {
-        "*.js": [
-            "eslint --fix --max-warnings=0",
-            "prettier --single-quote --semi=false --write",
-            "git add"
-        ]
-    }
+    "commands": [
+      {
+        "command": "node_require.require",
+        "title": "Node require/import"
+      },
+      {
+        "command": "node_require.requireMultiple",
+        "title": "Node require/import multiple"
+      },
+      {
+        "command": "node_require.requireAndInsert",
+        "title": "Node require/import and insert reference"
+      },
+      {
+        "command": "node_require.destructuringImport",
+        "title": "Node destructuring require/import"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "node_require.require",
+        "key": "ctrl+shift+1"
+      },
+      {
+        "command": "node_require.requireAndInsert",
+        "key": "ctrl+shift+2"
+      },
+      {
+        "command": "node_require.destructuringImport",
+        "key": "ctrl+shift+3"
+      }
+    ]
+  },
+  "scripts": {
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "precommit": "lint-staged"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "eslint": "^4.19.1",
+    "eslint-config-react-app": "^2.1.0",
+    "eslint-config-teselagen": "^4.0.12",
+    "eslint-plugin-flowtype": "^2.49.3",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.9.1",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.0",
+    "prettier": "^1.13.5",
+    "vscode": "^1.1.18"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "lodash": "^4.17.10"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix --max-warnings=0",
+      "prettier --single-quote --semi=false --write",
+      "git add"
+    ]
+  }
 }

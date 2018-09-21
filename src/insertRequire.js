@@ -62,7 +62,9 @@ module.exports = async function(value, insertAtCursor, config) {
   }
   const fileString = editor.document.getText()
   const codeBlock = fileString.split(os.EOL)
-  const lineStart = getPosition(codeBlock, isExternal)
+  const lineStart = config.insertAtCursor
+    ? null
+    : getPosition(codeBlock, isExternal)
   const cursorPosition = editor.selection.active
   let requireMethod = detectFileRequireMethod(codeBlock)
   if (!requireMethod) {
@@ -100,7 +102,9 @@ module.exports = async function(value, insertAtCursor, config) {
       : `import ${importName} from ${pathWithQuotes}${semi}`
 
   return editor.edit(editBuilder => {
-    const position = new vscode.Position(lineStart, 0)
+    const position = config.insertAtCursor
+      ? cursorPosition
+      : new vscode.Position(lineStart, 0)
     const existingLine = codeBlock[lineStart]
     // if no newline after previous require (eof)
     // add a newline before script
@@ -108,7 +112,9 @@ module.exports = async function(value, insertAtCursor, config) {
     // add an extra newline after if the next line is not a require statement
     const newLineAfter =
       !_.isEmpty(existingLine) && !isRequire(existingLine) ? '\n' : ''
-    const insertText = `${newLineBefore}${script}\n${newLineAfter}`
+    const insertText = config.insertAtCursor
+      ? script
+      : `${newLineBefore}${script}\n${newLineAfter}`
     if (!codeBlock.some(line => line === script))
       editBuilder.insert(position, insertText)
     if (insertAtCursor) editBuilder.insert(cursorPosition, importName)

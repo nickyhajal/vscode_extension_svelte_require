@@ -1,3 +1,7 @@
+# 1.2.8
+
+- ADDED: option to insert the require statement at cursor (insertAtCursor).
+
 # 1.2.4
 
 - ADDED: destructuring import now goes deeper. Will get named exports from files exported
