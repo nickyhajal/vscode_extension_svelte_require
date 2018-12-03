@@ -12,8 +12,16 @@ module.exports = function(originalName, preserveAcronymCase) {
 
     return caseName
   } else {
-    const camel = _.camelCase(originalName)
-    const fixedCase = originalName.slice(0, 1) + camel.slice(1)
+    const match = originalName.match(/[a-zA-Z]/)
+    let stringToUse = originalName
+    let specialStartingCharacters = ''
+    if (match && match.index !== 0) {
+      specialStartingCharacters = originalName.slice(0, match.index)
+      stringToUse = stringToUse.slice(match.index)
+    }
+    const camel = _.camelCase(stringToUse)
+    const fixedCase =
+      specialStartingCharacters + stringToUse.slice(0, 1) + camel.slice(1)
     return fixedCase
   }
 }
