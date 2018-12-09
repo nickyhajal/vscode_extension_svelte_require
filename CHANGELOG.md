@@ -1,3 +1,7 @@
+# 1.2.10
+
+- FIXED: places external import before local destructured imports.
+
 # 1.2.8
 
 - ADDED: option to insert the require statement at cursor (insertAtCursor).

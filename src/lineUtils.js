@@ -1,4 +1,4 @@
-const _ = require('lodash')
+const _ = require("lodash");
 
 module.exports = {
   isCommentOrEmpty: function(line) {
@@ -6,7 +6,7 @@ module.exports = {
       _.isEmpty(line) ||
       line.match(/^\s*\/\//) ||
       line.match(/^\s*["']use strict["']/)
-    )
+    );
   },
   isLocalRequire: function(line) {
     return (
@@ -14,24 +14,27 @@ module.exports = {
       line.match(/^import.*from\s['|"][.|/]/) ||
       // special case for statements like: import './style.css'
       line.match(/^import.*\s['|"][.|/]/)
-    )
+    );
   },
   isNamedImport: function(line) {
-    return line.match(/^import.*{/)
+    return line.match(/^import.*{/);
   },
   isNamedImportEnd: function(line) {
-    return line.match(/^.*from\s['|"]/)
+    return line.match(/^.*from\s['|"]/);
+  },
+  isLocalNamedImportEnd: function(line) {
+    return line.match(/^.*from\s['|"][.|/]/);
   },
   isStartOfBlockComment: function(line) {
-    return line.match(/^\s*\/\*/)
+    return line.match(/^\s*\/\*/);
   },
   isEndOfBlockComment: function(line) {
-    return line.match(/^.*\*\//)
+    return line.match(/^.*\*\//);
   },
   isStyleRequire: function(line) {
-    return line.match(/^\s*import ['|"].*['|"]/)
+    return line.match(/^\s*import ['|"].*['|"]/);
   },
   isShebang: function(line) {
-    return line.match(/^\s*#!/)
+    return line.match(/^\s*#!/);
   }
-}
+};

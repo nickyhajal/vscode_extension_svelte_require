@@ -29,4 +29,20 @@ describe("getPosition", () => {
     const lineIndex = getPosition(codeBlocks);
     expect(lineIndex).to.equal(3);
   });
+
+  it("gets correct position with multiline destructuring local", () => {
+    const codeBlocks = readFileIntoLineArray(
+      "testFiles/fileWithDestructuringImport.js"
+    );
+    const lineIndex = getPosition(codeBlocks);
+    expect(lineIndex).to.equal(10);
+  });
+
+  it("gets correct position with multiline destructuring external", () => {
+    const codeBlocks = readFileIntoLineArray(
+      "testFiles/fileWithDestructuringImport.js"
+    );
+    const lineIndex = getPosition(codeBlocks, true);
+    expect(lineIndex).to.equal(0);
+  });
 });
