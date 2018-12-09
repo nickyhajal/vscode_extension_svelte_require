@@ -2,7 +2,7 @@
   "name": "vs-code-node-require",
   "displayName": "Node Require",
   "description": "Require files, dependencies and core modules",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "publisher": "tgreen7",
   "engines": {
     "vscode": "^1.0.0"
@@ -186,7 +186,8 @@
   },
   "scripts": {
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "mocha"
+    "test": "mocha",
+    "testw": "mocha --watch"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
@@ -197,6 +198,7 @@
     "eslint-plugin-flowtype": "^3.2.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-no-only-tests": "^2.1.0",
     "eslint-plugin-react": "^7.11.1",
     "husky": "^1.2.0",
     "lint-staged": "^8.1.0",
@@ -210,14 +212,13 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged && yarn test"
     }
   },
   "lint-staged": {
     "*.js": [
       "eslint --fix --max-warnings=0",
-      "prettier --single-quote --semi=false --write",
-      "yarn test",
+      "prettier --write",
       "git add"
     ]
   }
