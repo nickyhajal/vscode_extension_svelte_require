@@ -167,6 +167,10 @@
       {
         "command": "node_require.destructuringImport",
         "title": "Node destructuring require/import"
+      },
+      {
+        "command": "node_require.importAll",
+        "title": "Node require - import all"
       }
     ],
     "keybindings": [
