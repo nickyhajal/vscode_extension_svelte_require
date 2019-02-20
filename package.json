@@ -25,7 +25,8 @@
     "onCommand:node_require.require",
     "onCommand:node_require.requireAndInsert",
     "onCommand:node_require.requireMultiple",
-    "onCommand:node_require.destructuringImport"
+    "onCommand:node_require.destructuringImport",
+    "onCommand:node_require.importAll"
   ],
   "main": "./src/extension",
   "contributes": {
