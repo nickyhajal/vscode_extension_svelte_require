@@ -141,9 +141,9 @@
           "description": "prefer single quote if autodetect fails."
         },
         "node_require.defaultRequireMethod": {
-          "type": ["string"],
+          "type": ["string", "null"],
           "enum": ["require", "import"],
-          "default": "ask",
+          "default": null,
           "description": "What method should be used if not automatically detected. If none provided you will be asked each time."
         },
         "node_require.preserveAcronymCase": {
