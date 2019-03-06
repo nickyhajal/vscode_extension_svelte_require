@@ -80,7 +80,7 @@ module.exports = async function(value, insertAtCursor, config, importAll) {
   if (importAll) {
     requireMethod = constants.TYPE_IMPORT;
   } else {
-    requireMethod = detectFileRequireMethod(codeBlock);
+    requireMethod = detectFileRequireMethod(codeBlock) || config.defaultRequireMethod;
   }
   if (!requireMethod) {
     const style = await vscode.window.showQuickPick(
