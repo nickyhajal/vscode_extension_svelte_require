@@ -1,6 +1,7 @@
-.vscode/**
-typings/**
-test/**
+.vscode
+typings
+test
+node_modules
 .gitignore
 jsconfig.json
 vsc-extension-quickstart.md
