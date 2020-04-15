@@ -9,7 +9,7 @@ const getPackageDeps = require("./getPackageDeps");
 const showModulePropNames = require("./showModulePropNames");
 
 function activate(context) {
-  const config = vscode.workspace.getConfiguration("node_require");
+  const config = vscode.workspace.getConfiguration("svelte_require");
 
   const startPick = function({
     insertAtCursor = false,
@@ -102,32 +102,55 @@ function activate(context) {
   };
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("node_require.require", () => {
-      startPick();
+    vscode.commands.registerCommand("svelte_require.require", () => {
+      if (
+        vscode.window.activeTextEditor.document.fileName.includes(".svelte")
+      ) {
+        startPick();
+      }
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("node_require.requireAndInsert", () => {
-      startPick({ insertAtCursor: true });
+    vscode.commands.registerCommand("svelte_require.requireAndInsert", () => {
+      if (
+        vscode.window.activeTextEditor.document.fileName.includes(".svelte")
+      ) {
+        startPick({ insertAtCursor: true });
+      }
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("node_require.requireMultiple", () => {
-      startPick({ multiple: true });
+    vscode.commands.registerCommand("svelte_require.requireMultiple", () => {
+      if (
+        vscode.window.activeTextEditor.document.fileName.includes(".svelte")
+      ) {
+        startPick({ multiple: true });
+      }
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("node_require.destructuringImport", () => {
-      startPick({ destructuring: true });
-    })
+    vscode.commands.registerCommand(
+      "svelte_require.destructuringImport",
+      () => {
+        if (
+          vscode.window.activeTextEditor.document.fileName.includes(".svelte")
+        ) {
+          startPick({ destructuring: true });
+        }
+      }
+    )
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("node_require.importAll", () => {
-      startPick({ importAll: true });
+    vscode.commands.registerCommand("svelte_require.importAll", () => {
+      if (
+        vscode.window.activeTextEditor.document.fileName.includes(".svelte")
+      ) {
+        startPick({ importAll: true });
+      }
     })
   );
 }

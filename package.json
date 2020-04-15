@@ -1,19 +1,19 @@
 {
-  "name": "vs-code-node-require",
-  "displayName": "Node Require",
+  "name": "vs-code-svelte-require",
+  "displayName": "Svelte Require",
   "description": "Require files, dependencies and core modules",
-  "version": "1.4.5",
-  "publisher": "tgreen7",
+  "version": "1.4.6",
+  "publisher": "nickyhajal",
   "engines": {
     "vscode": "^1.0.0"
   },
-  "homepage": "https://github.com/tgreen7/vscode_extension_node_require",
+  "homepage": "https://github.com/nickyhajal/vscode_extension_svelte_require",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tgreen7/vscode_extension_node_require"
+    "url": "https://github.com/nickyhajal/vscode_extension_svelte_require"
   },
   "bugs": {
-    "url": "https://github.com/tgreen7/vscode_extension_node_require/issues"
+    "url": "https://github.com/nickyhajal/vscode_extension_svelte_require/issues"
   },
   "license": "MIT",
   "icon": "resources/images/logo.png",
@@ -21,22 +21,23 @@
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:javascript",
-    "onCommand:node_require.require",
-    "onCommand:node_require.requireAndInsert",
-    "onCommand:node_require.requireMultiple",
-    "onCommand:node_require.destructuringImport",
-    "onCommand:node_require.importAll"
+    "onLanguage:svelte",
+    "onCommand:svelte_require.require",
+    "onCommand:svelte_require.requireAndInsert",
+    "onCommand:svelte_require.requireMultiple",
+    "onCommand:svelte_require.destructuringImport",
+    "onCommand:svelte_require.importAll"
   ],
   "main": "./src/extension",
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "Node Require",
+      "title": "Svelte Require",
       "properties": {
-        "node_require.include": {
+        "svelte_require.include": {
           "type": "array",
           "default": [
+            "svelte",
             "js",
             "ts",
             "jsx",
@@ -46,7 +47,7 @@
           ],
           "description": "include files to search for"
         },
-        "node_require.exclude": {
+        "svelte_require.exclude": {
           "type": "array",
           "default": [
             "node_modules",
@@ -58,7 +59,7 @@
           ],
           "description": "defines files and folders to exclude"
         },
-        "node_require.aliases": {
+        "svelte_require.aliases": {
           "type": "object",
           "description": "A mapping from module name to a different alias (the variable name it is assigned to)",
           "default": {
@@ -130,17 +131,17 @@
             "underscore.string": "s"
           }
         },
-        "node_require.semi": {
+        "svelte_require.semi": {
           "type": "boolean",
           "default": false,
           "description": "whether to insert semicolon after import/require if autodetect fails."
         },
-        "node_require.singleQuote": {
+        "svelte_require.singleQuote": {
           "type": "boolean",
           "default": true,
           "description": "prefer single quote if autodetect fails."
         },
-        "node_require.defaultRequireMethod": {
+        "svelte_require.defaultRequireMethod": {
           "type": [
             "string"
           ],
@@ -151,12 +152,12 @@
           ],
           "description": "what method should be used if not automatically detected. If none provided you will be asked each time."
         },
-        "node_require.preserveAcronymCase": {
+        "svelte_require.preserveAcronymCase": {
           "type": "boolean",
           "default": false,
           "description": "convert filename to camelCase but preserves acronyms like `devSQLConfig` or `XMLImporter`."
         },
-        "node_require.insertAtCursor": {
+        "svelte_require.insertAtCursor": {
           "type": "boolean",
           "default": false,
           "description": "places import statements at cursor instead of at the bottom of the import block"
@@ -165,37 +166,37 @@
     },
     "commands": [
       {
-        "command": "node_require.require",
+        "command": "svelte_require.require",
         "title": "Node require/import"
       },
       {
-        "command": "node_require.requireMultiple",
+        "command": "svelte_require.requireMultiple",
         "title": "Node require/import multiple"
       },
       {
-        "command": "node_require.requireAndInsert",
+        "command": "svelte_require.requireAndInsert",
         "title": "Node require/import and insert reference"
       },
       {
-        "command": "node_require.destructuringImport",
+        "command": "svelte_require.destructuringImport",
         "title": "Node destructuring require/import"
       },
       {
-        "command": "node_require.importAll",
+        "command": "svelte_require.importAll",
         "title": "Node require - import all"
       }
     ],
     "keybindings": [
       {
-        "command": "node_require.require",
-        "key": "ctrl+shift+1"
+        "command": "svelte_require.require",
+        "key": "ctrl+alt+1"
       },
       {
-        "command": "node_require.requireAndInsert",
+        "command": "svelte_require.requireAndInsert",
         "key": "ctrl+shift+2"
       },
       {
-        "command": "node_require.destructuringImport",
+        "command": "svelte_require.destructuringImport",
         "key": "ctrl+shift+3"
       }
     ]

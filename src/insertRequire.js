@@ -80,7 +80,8 @@ module.exports = async function(value, insertAtCursor, config, importAll) {
   if (importAll) {
     requireMethod = constants.TYPE_IMPORT;
   } else {
-    requireMethod = detectFileRequireMethod(codeBlock) || config.defaultRequireMethod;
+    requireMethod =
+      detectFileRequireMethod(codeBlock) || config.defaultRequireMethod;
   }
   if (!requireMethod) {
     const style = await vscode.window.showQuickPick(
@@ -122,7 +123,7 @@ module.exports = async function(value, insertAtCursor, config, importAll) {
     const position = config.insertAtCursor
       ? cursorPosition
       : new vscode.Position(lineStart, 0);
-    const existingLine = codeBlock[lineStart];
+    const existingLine = codeBlock[lineStart].trim();
     // if no newline after previous require (eof)
     // add a newline before script
     const newLineBefore = existingLine === undefined ? "\n" : "";
@@ -130,8 +131,8 @@ module.exports = async function(value, insertAtCursor, config, importAll) {
     const newLineAfter =
       !_.isEmpty(existingLine) && !isRequire(existingLine) ? "\n" : "";
     const insertText = config.insertAtCursor
-      ? script
-      : `${newLineBefore}${script}\n${newLineAfter}`;
+      ? `\t${script}`
+      : `${newLineBefore}\t${script}\n${newLineAfter}`;
     if (!codeBlock.some(line => line === script))
       editBuilder.insert(position, insertText);
     if (insertAtCursor) editBuilder.insert(cursorPosition, importName);

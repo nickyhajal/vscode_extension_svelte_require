@@ -17,10 +17,16 @@ module.exports = function(codeBlock, placeWithExternals) {
   let findingNamedImportEnd = false;
   let findingBlockCommentEnd = false;
   let importOrRequireHit = false;
+  let foundScripts = false;
 
   for (let i = 0; i < codeBlock.length; i++) {
-    const line = codeBlock[i];
-    if (findingNamedImportEnd) {
+    const line = codeBlock[i].trim();
+    if (!foundScripts) {
+      candidate = i + 1;
+      if (line.includes("<script>")) {
+        foundScripts = true;
+      }
+    } else if (findingNamedImportEnd) {
       if (isNamedImportEnd(line)) {
         if (isLocalNamedImportEnd(line) && placeWithExternals) {
           return candidateBeforeNamedImport;

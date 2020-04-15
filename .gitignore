@@ -50,5 +50,8 @@ jspm_packages
 # Yarn Integrity file
 .yarn-integrity
 
+# Local History
+.history
+
 
 # End of https://www.gitignore.io/api/node
