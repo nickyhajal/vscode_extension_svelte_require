@@ -1,6 +1,5 @@
 const vscode = require("vscode");
 const path = require("path");
-const Promise = require("bluebird");
 const _ = require("lodash");
 const insertRequire = require("./insertRequire");
 const getProjectFiles = require("./getProjectFiles");
@@ -17,7 +16,7 @@ function activate(context) {
     destructuring = false,
     importAll = false
   } = {}) {
-    Promise.join(getPackageDeps(), getProjectFiles(config)).then(
+    Promise.all([getPackageDeps(), getProjectFiles(config)]).then(
       ([packageDepsArray = [], projectFiles = []]) => {
         const editor = vscode.window.activeTextEditor;
         if (!editor) return;
