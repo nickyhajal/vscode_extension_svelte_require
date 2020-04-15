@@ -2,7 +2,7 @@
   "name": "vs-code-svelte-require",
   "displayName": "Svelte Require",
   "description": "Require svelte files, dependencies and core modules into a svelte component",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "publisher": "nickyhajal",
   "engines": {
     "vscode": "^1.0.0"
