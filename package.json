@@ -2,7 +2,7 @@
   "name": "vs-code-svelte-require",
   "displayName": "Svelte Require",
   "description": "Require svelte files, dependencies and core modules into a svelte component",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "publisher": "nickyhajal",
   "engines": {
     "vscode": "^1.0.0"
@@ -224,7 +224,7 @@
     "vscode": "^1.1.22"
   },
   "dependencies": {
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.15"
   },
   "husky": {
     "hooks": {
