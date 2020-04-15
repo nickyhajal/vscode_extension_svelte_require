@@ -1,48 +1,52 @@
 {
-  "name": "vs-code-bitkompagniet-require",
-  "displayName": "Bitkompagniet Node Require",
+  "name": "vs-code-node-require",
+  "displayName": "Node Require",
   "description": "Require files, dependencies and core modules",
-  "version": "0.7.0",
-  "publisher": "bitkompagniet",
+  "version": "1.4.5",
+  "publisher": "tgreen7",
   "engines": {
     "vscode": "^1.0.0"
   },
-  "icon": "resources/images/bit.png",
-  "homepage": "https://github.com/bitkompagniet/vscode_extension_quick_require",
-  "license": "MIT",
-  "galleryBanner": {
-    "color": "#bdc3c7"
+  "homepage": "https://github.com/tgreen7/vscode_extension_node_require",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tgreen7/vscode_extension_node_require"
   },
+  "bugs": {
+    "url": "https://github.com/tgreen7/vscode_extension_node_require/issues"
+  },
+  "license": "MIT",
+  "icon": "resources/images/logo.png",
   "categories": [
     "Other"
   ],
   "activationEvents": [
     "onLanguage:javascript",
-    "onCommand:bitk_node_require.require",
-    "onCommand:bitk_node_require.requireAndInsert"
+    "onCommand:node_require.require",
+    "onCommand:node_require.requireAndInsert",
+    "onCommand:node_require.requireMultiple",
+    "onCommand:node_require.destructuringImport",
+    "onCommand:node_require.importAll"
   ],
   "main": "./src/extension",
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "Bitkompagniet Node Require",
+      "title": "Node Require",
       "properties": {
-        "bitk_node_require.include": {
+        "node_require.include": {
           "type": "array",
           "default": [
             "js",
             "ts",
             "jsx",
-            "tsx"
+            "tsx",
+            "css",
+            "json"
           ],
           "description": "include files to search for"
         },
-        "bitk_node_require.use_semicolon": {
-          "type": "boolean",
-          "default": true,
-          "description": "Adds a semicolon at the end of the require statement"
-        },
-        "bitk_node_require.exclude": {
+        "node_require.exclude": {
           "type": "array",
           "default": [
             "node_modules",
@@ -54,12 +58,7 @@
           ],
           "description": "defines files and folders to exclude"
         },
-        "bitk_node_require.search_module_files": {
-          "type": "boolean",
-          "default": false,
-          "description": "whether we want to search files inside node module directories (performance might be sluggish)"
-        },
-        "bitk_node_require.aliases": {
+        "node_require.aliases": {
           "type": "object",
           "description": "A mapping from module name to a different alias (the variable name it is assigned to)",
           "default": {
@@ -130,42 +129,113 @@
             "r": "rethinkdb",
             "underscore.string": "s"
           }
+        },
+        "node_require.semi": {
+          "type": "boolean",
+          "default": false,
+          "description": "whether to insert semicolon after import/require if autodetect fails."
+        },
+        "node_require.singleQuote": {
+          "type": "boolean",
+          "default": true,
+          "description": "prefer single quote if autodetect fails."
+        },
+        "node_require.defaultRequireMethod": {
+          "type": [
+            "string"
+          ],
+          "enum": [
+            "",
+            "require",
+            "import"
+          ],
+          "description": "what method should be used if not automatically detected. If none provided you will be asked each time."
+        },
+        "node_require.preserveAcronymCase": {
+          "type": "boolean",
+          "default": false,
+          "description": "convert filename to camelCase but preserves acronyms like `devSQLConfig` or `XMLImporter`."
+        },
+        "node_require.insertAtCursor": {
+          "type": "boolean",
+          "default": false,
+          "description": "places import statements at cursor instead of at the bottom of the import block"
         }
       }
     },
     "commands": [
       {
-        "command": "bitk_node_require.require",
+        "command": "node_require.require",
         "title": "Node require/import"
       },
       {
-        "command": "bitk_node_require.requireAndInsert",
+        "command": "node_require.requireMultiple",
+        "title": "Node require/import multiple"
+      },
+      {
+        "command": "node_require.requireAndInsert",
         "title": "Node require/import and insert reference"
+      },
+      {
+        "command": "node_require.destructuringImport",
+        "title": "Node destructuring require/import"
+      },
+      {
+        "command": "node_require.importAll",
+        "title": "Node require - import all"
       }
     ],
     "keybindings": [
       {
-        "command": "bitk_node_require.require",
+        "command": "node_require.require",
         "key": "ctrl+shift+1"
       },
       {
-        "command": "bitk_node_require.requireAndInsert",
+        "command": "node_require.requireAndInsert",
         "key": "ctrl+shift+2"
+      },
+      {
+        "command": "node_require.destructuringImport",
+        "key": "ctrl+shift+3"
       }
     ]
   },
   "scripts": {
-    "postinstall": "node ./node_modules/vscode/bin/install"
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "mocha",
+    "testw": "mocha --watch"
   },
   "devDependencies": {
-    "eslint": "^3.9.1",
-    "eslint-config-airbnb": "^12.0.0",
-    "eslint-plugin-import": "^1.16.0",
-    "eslint-plugin-jsx-a11y": "^2.2.3",
-    "eslint-plugin-react": "^6.5.0",
-    "vscode": "^0.11.0"
+    "babel-eslint": "^10.0.1",
+    "chai": "^4.2.0",
+    "eslint": "^5.9.0",
+    "eslint-config-react-app": "^3.0.5",
+    "eslint-config-teselagen": "^4.1.2",
+    "eslint-plugin-flowtype": "^3.2.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-no-only-tests": "^2.1.0",
+    "eslint-plugin-react": "^7.11.1",
+    "husky": "^1.2.0",
+    "lint-staged": "^8.1.0",
+    "mocha": "^5.2.0",
+    "prettier": "^1.15.3",
+    "vscode": "^1.1.22"
   },
   "dependencies": {
-    "lodash": "^4.17.2"
+    "bluebird": "^3.5.3",
+    "lodash": "^4.17.11"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && yarn test"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix --max-warnings=0",
+      "prettier --write",
+      "git add"
+    ]
   }
 }

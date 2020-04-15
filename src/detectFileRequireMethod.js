@@ -1,10 +1,11 @@
-const constants = require('./constants');
+const constants = require('./constants')
 
 module.exports = function(codeBlock) {
-    for (let i = 0; i < codeBlock.length; i += 1) {
-        if (codeBlock[i].match(/^import/)) return constants.TYPE_IMPORT;
-        if (codeBlock[i].match(/require\(/)) return constants.TYPE_REQUIRE;
-    }
+  for (let i = 0; i < codeBlock.length; i += 1) {
+    const line = codeBlock[i]
+    if (line.match(/^import/)) return constants.TYPE_IMPORT
+    if (line.match(/require\(/)) return constants.TYPE_REQUIRE
+  }
 
-    return null;
-};
+  return null
+}
