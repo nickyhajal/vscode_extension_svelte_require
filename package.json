@@ -218,7 +218,7 @@
     "eslint-plugin-no-only-tests": "^2.1.0",
     "eslint-plugin-react": "^7.11.1",
     "husky": "^1.2.0",
-    "lint-staged": "^8.1.0",
+    "lint-staged": "^13.1.0",
     "mocha": "^5.2.0",
     "prettier": "^1.15.3",
     "vscode": "^1.1.22"
